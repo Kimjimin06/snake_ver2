@@ -1,0 +1,224 @@
+.container-detail1 {
+    max-width: 1300px;
+    margin: 130px auto 30px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.starsel {
+    direction: rtl;
+    text-align: left;
+}
+
+.selectedScore {
+    float: right;
+}
+
+/* 라디오 버튼 숨기기 */
+.star1 {
+    display: none;
+}
+
+/* 라벨을 별 모양으로 스타일링 */
+.starsel > label {
+    font-size: 2em;
+    color: lightgray;
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+}
+
+.star1:checked ~ label {
+    color: lightgray;
+}
+.star1:checked + label,
+.star1:checked + label ~ label {
+    color: gold;
+}
+/* 호버 효과로 선택 미리보기 */
+.rating label:hover,
+.rating label:hover ~ label {
+    color: gold;
+}
+
+/* 체크된 상태에서 별 색상 변경 */
+.star1:checked ~ label {
+    color: gold;
+}
+
+/* 선택된 별과 그 이전 별들 금색으로 표시 */
+.star1:checked + label,
+.star1:checked + label ~ label
+{
+    color: gold;
+}
+
+/* 호버 효과로 선택 미리보기 */
+.star1 > label:hover,
+.star1 > label:hover ~ label
+{
+    color: gold;
+}
+
+/* 체크된 상태에서의 호버 효과 유지 */
+.star1:checked + label:hover,
+.star1:checked + label:hover ~ label,
+.star1:checked ~ label:hover,
+.star1:checked ~ label:hover ~ label {
+    color: gold;
+}
+
+.memo > h4 {
+    text-align: center;
+}
+
+.memotitle {
+    width: 390px;
+    height: 43px;
+    resize: none;
+    margin-left: 10%;
+    overflow: auto;
+}
+.real-upload {
+    margin-top: 10px;
+}
+
+img {
+    width: 150px;
+    height: 100px;
+    text-align: center;
+    margin : 5px auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.wrap {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-content: space-around;
+}
+
+.upload {
+    width: 150px;
+    height: 100px;
+    background-color: antiquewhite;
+    margin : 5px auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.memotext {
+    width: 390px;
+    margin-left: 10%;
+    height: 150px;
+    resize: none;
+}
+.reviewhead {
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    border-radius: 0.25rem;
+    width: 1100px;
+    margin-left: 7%;
+}
+
+.cardhead > h4 {
+    padding: 1px;
+    margin-left: 10px;
+    margin-top: 10px;
+}
+
+.cardhead {
+    border-bottom: 1px solid lightgray;
+    background-color: rgba(0,0,0,0.03);
+    display: flex;
+    justify-content: space-between;
+}
+
+.reviewbtn {
+    margin-top: 10px;
+    height: 50%;
+    width: 100px;
+    top:50%;
+    background-color:#0a0a23;
+    color: #fff;
+}
+
+.reviewbody {
+    flex: 1 1 auto;
+    min-height: 1px;
+    padding: 1.25rem;
+}
+
+.star , .time, .title1, .body1 {
+    text-align: left;
+}
+
+.modal-main > p {
+    border-bottom: 1px solid lightgray;
+}
+
+.comment {
+    border: 1px solid lightgray;
+    display: flex;
+    margin-top: 10%;
+    border-radius: 3px;
+}
+
+.row-6 > h5 {
+    border-bottom: 1px solid lightgray;
+}
+
+ul {
+    list-style-type: circle;
+}
+
+.btn-secondary {
+    background-color: cornflowerblue;
+    border: none;
+}
+
+.comment1 {
+    padding: 8px;
+}
+.contents {
+    border-bottom: 1px solid lightgray;
+
+}
+.commenttext {
+    resize: none;
+    width: 90%;
+    height: 50%;
+    border: none;
+    text-align: left;
+    color: black;
+    flex: 9;
+    outline: none;
+}
+
+.row-6 {
+    overflow-y: auto;
+    height: 75%;
+}
+
+.ok {
+    margin-top: 13px;
+    flex: 1;
+    color: cadetblue;
+
+}

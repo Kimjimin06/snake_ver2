@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <th:block th:fragment="headerFragment">
+        <script defer src="/assets/js/header.js"></script>
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            const msg = [[${msg}]]
+            if(msg != null) {
+                alert(msg);
+            }
+        </script>
+        <div id="topbar" class="d-flex align-items-center fixed-top">
+            <div class="container d-flex justify-content-between">
+                <div class="contact-info d-flex align-items-center">
+                    <i class="bi bi-envelope"></i> <a href="mailto:contact@example.com">test@example.com</a>
+                    <i class="bi bi-phone"></i> +82 010-2248-7244
+                </div>
+                <div class="d-none d-lg-flex social-links align-items-center">
+                    <a href="#" class="twitter"><i class="bi bi-twitter"></i></a>
+                    <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
+                    <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></i></a>
+                </div>
+            </div>
+        </div>
+        <!-- ======= Header ======= -->
+        <header id="header" class="fixed-top">
+            <div class="container d-flex align-items-center">
+                <h1 class="logo me-auto"><a href="/">JAVA스터디</a></h1>
+                <!-- Uncomment below if you prefer to use an image logo -->
+                <!-- <a href="index.html" class="logo me-auto"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
+                <nav id="navbar" class="navbar order-last order-lg-0">
+                    <ul>
+                        <li><a class="nav-link scrollto" id="home" href="/">홈</a></li>
+                        <li><a class="nav-link scrollto" id="detail" href="detail">정보</a></li>
+                        <li><a class="nav-link scrollto" id="messageBoard" href="messageBoard?category=0&pageGroup=1&groupCommunity=1">게시판</a></li>
+                        <li><a class="nav-link scrollto" id="review" href="review">리뷰</a></li>
+
+                        <li th:if="${session.username == null}">
+                            <button type="button" id="appointment-btn" class="appointment-btn scrollto">로그인/회원가입</button>
+                        </li>
+                        <th:block th:if="${session.username != null}">
+                            <li>
+                                <a th:href="@{mypage(id=${session.userid}, pageGroup=1, groupCommunity=1)}" id="mypage">
+                                    마이페이지
+                                </a>
+                            </li>
+                            <li>
+                                <span th:text="${session.username} + 님."></span>
+                            </li>
+                            <li>
+                                <a href="logout.do" class="appointment-btn1"><span class="logoutspan">로그아웃</span></a>
+                            </li>
+                            <li th:if="${session.username != null}">
+                                <div id="alarm-button"><i class="bi bi-bell-fill"></i></div>
+                            </li>
+                            <li th:if="${session.username != null}">
+                                <div id="chat-button"><i class="bi bi-chat-dots"></i></div>
+                            </li>
+                        </th:block>
+
+                    </ul>
+                    <i class="bi bi-list mobile-nav-toggle"></i>
+                </nav><!-- .navbar -->
+            </div>
+        </header><!-- End Header -->
+
+        <div class="modal fade" id="mymodal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-container">
+                        <body id="particles-js"></body>
+                        <span class="error animated tada" id="msg"></span>
+                        <form method="post" action="/login" name="form1" class="box" onsubmit="return checkStuff()">
+                            <h4>로그인</h4><br>
+                            <h5>스터디를 이용하시려면 로그인 하세요.</h5>
+                            <input type="text" name="memberId"  placeholder="아이디" autocomplete="off">
+                            <i class="typcn typcn-eye" id="eye"></i>
+                            <input type="password" name="memberPw" placeholder="비밀번호" id="pwd" autocomplete="off">
+                            <div style="text-align: center; margin: 0 auto;">
+                                <a href="/join" class="forgetpass">회원가입</a>
+                            </div>
+                            <input type="submit" value="로그인" class="btn1">
+                            <div class="login-footer">
+                                <span>제작지원 <a href="https://github.com/breath03/SnakeProject">뱀띠</a></span>
+                                <button type="button" class="btn btn-secondary modal-close" data-bs-dismiss="modal">닫기</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- main-alarm -->
+        <div th:if="${session.username != null}"
+                id="main-alarm" class="flex-column align-items-stretch flex-shrink-0 bg-body-tertiary hidden" style="width: 380px;">
+            <div class="d-flex align-items-center flex-shrink-0 p-3 link-body-emphasis text-decoration-none border-bottom">
+                <i class="bi bi-bell-fill"></i>
+                <span class="fs-5 fw-semibold">notification</span>
+                <div id="allclear-btn">모두 지우기</div>
+            </div>
+            <div class="list-group list-group-flush border-bottom scrollarea">
+                <a class="list-group-item list-group-item-action py-3 lh-sm hello" aria-current="true">
+                    <div class="d-flex w-100 align-items-center justify-content-between">
+                        <strong class="mb-1">List group item heading</strong>
+                        <i id="clear-btn" class="bi bi-x"></i>
+                    </div>
+                    <div class="col-10 mb-1 small">Some placeholder content in a paragraph below the heading and date.</div>
+                    <small class="alarm-date">0000-00-00 00:00 Wed</small>
+                </a>
+                <a class="list-group-item list-group-item-action py-3 lh-sm">
+                    <div class="d-flex w-100 align-items-center justify-content-between">
+                        <strong class="mb-1">List group item heading</strong>
+                        <small class="text-body-secondary">Tues</small>
+                    </div>
+                    <div class="col-10 mb-1 small">Some placeholder content in a paragraph below the heading and date.</div>
+                </a>
+                <a class="list-group-item list-group-item-action py-3 lh-sm">
+                    <div class="d-flex w-100 align-items-center justify-content-between">
+                        <strong class="mb-1">List group item heading</strong>
+                        <small class="text-body-secondary">Tues</small>
+                    </div>
+                    <div class="col-10 mb-1 small">Some placeholder content in a paragraph below the heading and date.</div>
+                </a>
+                <a class="list-group-item list-group-item-action py-3 lh-sm">
+                    <div class="d-flex w-100 align-items-center justify-content-between">
+                        <strong class="mb-1">List group item heading</strong>
+                        <small class="text-body-secondary">Tues</small>
+                    </div>
+                    <div class="col-10 mb-1 small">Some placeholder content in a paragraph below the heading and date.</div>
+                </a>
+                <a class="list-group-item list-group-item-action active py-3 lh-sm" aria-current="true">
+                    <div class="d-flex w-100 align-items-center justify-content-between">
+                        <strong class="mb-1">List group item heading</strong>
+                        <small>Wed</small>
+                    </div>
+                    <div class="col-10 mb-1 small">Some placeholder content in a paragraph below the heading and date.</div>
+                </a>
+                <a class="list-group-item list-group-item-action py-3 lh-sm">
+                    <div class="d-flex w-100 align-items-center justify-content-between">
+                        <strong class="mb-1">List group item heading</strong>
+                        <small class="text-body-secondary">Tues</small>
+                    </div>
+                    <div class="col-10 mb-1 small">Some placeholder content in a paragraph below the heading and date.</div>
+                </a>
+                <a class="list-group-item list-group-item-action py-3 lh-sm">
+                    <div class="d-flex w-100 align-items-center justify-content-between">
+                        <strong class="mb-1">List group item heading</strong>
+                        <small class="text-body-secondary">Tues</small>
+                    </div>
+                    <div class="col-10 mb-1 small">Some placeholder content in a paragraph below the heading and date.</div>
+                </a>
+            </div>
+        </div>
+
+
+        <!-- main-chat -->
+        <div th:if="${session.username != null}"
+                id="main-chat" class="flex-column align-items-stretch flex-shrink-0 bg-body-tertiary hidden" style="width: 380px;">
+            <div class="d-flex align-items-center flex-shrink-0 p-3 link-body-emphasis text-decoration-none border-bottom">
+                <i class="bi bi-chat-dots"></i>
+                <span class="fs-5 fw-semibold">Chat</span>
+            </div>
+            <div class="list-group list-group-flush border-bottom scrollarea">
+                <a class="list-group-item list-group-item-action py-3 lh-sm hello" aria-current="true">
+                    <div class="d-flex w-100 align-items-center justify-content-between">
+                        <strong class="mb-1">List group item heading</strong>
+                        <i id="clear-btn" class="bi bi-x"></i>
+                    </div>
+                    <div class="col-10 mb-1 small">Some placeholder content in a paragraph below the heading and date.</div>
+                    <small class="alarm-date">0000-00-00 00:00 Wed</small>
+                </a>
+            </div>
+        </div>
+
+        <!-- jQuery -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <!-- Bootstrap JavaScript -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            // 삭제 버튼 클릭 시 모달 창 표시
+            $("#appointment-btn").click(function () {
+                $("#mymodal").modal("show");
+            });
+        </script>
+        <script>
+            const alarmButton = document.getElementById('alarm-button')
+            const chatButton = document.getElementById('chat-button')
+
+            alarmButton.addEventListener('click', ()=>{
+              const mainAlarm = document.getElementById('main-alarm')
+              const mainChat = document.getElementById('main-chat')
+              mainChat.classList.add("hidden")
+              mainAlarm.classList.toggle("hidden")
+            })
+
+            chatButton.addEventListener('click', ()=>{
+                const mainChat = document.getElementById('main-chat')
+                const mainAlarm = document.getElementById('main-alarm')
+                mainAlarm.classList.add("hidden")
+                mainChat.classList.toggle("hidden")
+            })
+
+        </script>
+        <script>
+            const allclearButton = document.getElementById('allclear-btn')
+            const clearButton = document.getElementById('clear-btn')
+
+            allclearButton.addEventListener('click', ()=>{
+                const ListGroupItems = document.querySelectorAll('a.list-group-item')
+                ListGroupItems.forEach((ListGroupItem)=>{
+                  ListGroupItem.classList.add('btn-hide')
+                  //실제 알림들 db에서 지우는 함수 실행
+                })
+            })
+            clearButton.addEventListener('click', ()=>{
+              const target = event.target
+              const rs = target.closest('a')
+              rs.classList.add('btn-hide')
+              //실제 알림 db에서 지우는 함수 실행
+            })
+        </script>
+    </th:block>
+</html>

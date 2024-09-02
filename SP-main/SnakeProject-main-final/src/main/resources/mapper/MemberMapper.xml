@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.project.SnakeProject.mapper.MemberMapper">
+    
+    <resultMap id="CommunityCategoryVo" type="CommunityCategoryVo">
+        <constructor>
+            <arg column="ComCateName" javaType="String" />
+        </constructor>
+    </resultMap>
+
+    <resultMap id="MemberVo" type="MemberVo">
+        <constructor>
+            <arg column="MemberName" javaType="String" />
+        </constructor>
+    </resultMap>
+
+    <resultMap id="CommunityVo" type="CommunityVo">
+        <result column="ComIdx" property="ComIdx" />
+        <result column="ComToCount" property="ComToCount" />
+        <result column="ComintoDate" property="ComintoDate" />
+        <result column="ComTitle" property="ComTitle" />
+        <result column="ComRegDate" property="ComRegDate" />
+        <collection property="communityCategoryVo" resultMap="CommunityCategoryVo" />
+        <collection property="memberVo" resultMap="MemberVo" />
+    </resultMap>
+    
+    <insert id="addMember" parameterType="map">
+<!--        <selectKey keyProperty="memSeq" resultType="java.lang.Integer" order="BEFORE">-->
+<!--            select MEM_SEQ.nextval from dual-->
+<!--        </selectKey>-->
+        INSERT INTO Tbl_Member
+        (
+            MIdx, MemberId, MemberPw,
+            MemberName, MemberSex, MemberPhone
+        )
+        VALUES
+        (
+            MEM_SEQ.nextval,
+            #{MemberId},
+            #{MemberPw},
+            #{MemberName},
+            #{MemberSex},
+            #{MemberPhone}
+        )
+    </insert>
+    <select id="selectId" resultType="boolean">
+        SELECT COUNT(*) FROM tbl_member where MemberId = #{MemberId}
+    </select>
+    <select id="login" resultType="String">
+        select MemberName from tbl_member where MemberId = #{MemberId} and MemberPw = #{MemberPw}
+    </select>
+    <select id="selectInfo" resultType="com.project.SnakeProject.vo.MemberVo">
+        select * from tbl_member where MemberId = #{MemberId}
+    </select>
+    <update id="updateInfo" parameterType="map">
+        update tbl_member set
+            MemberPw = #{MemberPw},
+            MemberName = #{MemberName},
+            MemberPhone = #{MemberPhone}
+        where MemberId = #{MemberId}
+    </update>
+    <select id="MyPageCommunity" resultMap="CommunityVo">
+        SELECT
+            c.ComIdx,
+            MemberName,
+            tcc.ComCateName,
+            c.ComToCount,
+            c.ComintoDate,
+            c.ComTitle,
+            to_char(c.ComRegDate, 'YYYY-MM-DD HH24:MI') AS ComRegDate
+        FROM
+            Tbl_Community c
+                inner JOIN tbl_community_category tcc ON tcc.ComCateIdx = c.ComCateIdx
+                inner join tbl_member tm on tm.MIdx = c.MIdx
+        where c.MIdx = (select MIdx from tbl_member where MemberId = #{MemberId})
+        GROUP BY
+            c.ComIdx,
+            MemberName,
+            tcc.ComCateName,
+            c.ComToCount,
+            c.ComintoDate,
+            c.ComTitle,
+            c.ComRegDate
+        ORDER BY
+            c.ComIdx
+    </select>
+
+    <!-- 회원 탈퇴를 하기 위한 비밀번호 체크 -->
+    <select id="selectPass" resultType="boolean" parameterType="map">
+        select count(*) from tbl_member where MemberId = #{MemberId} and MemberPw = #{MemberPw}
+    </select>
+    <!-- 회원 탈퇴 -->
+    <delete id="deleteInfo" parameterType="java.lang.String">
+        delete from tbl_member
+        where midx in (
+            select tm.midx
+            from tbl_member tm -- 본인도 탈퇴
+                     left join tbl_community tc on tc.midx = tm.midx -- 본인이 작성한 글 삭제
+                     left join tbl_studyreview tsr on tsr.midx = tm.midx -- 본인이 작성한 리뷰정보 삭제
+                     left join tbl_memberininfo tmi on tmi.midx = tm.midx -- 본인이 예약한 좌석정보 삭제
+                     left join tbl_studygorder tsgo on tmi.midx = tsgo.midx -- 본인이 그룹 예약한 정보 삭제
+                     left join tbl_studyreview tsr on tmi.midx = tsr.midx -- 본인이 작성한 리뷰글 삭제
+                     left join tbl_studyreviewimg tsri on tsr.sridx = tsri.sridx -- 리뷰글에 첨부된 사진도 함께 삭제
+            where tm.midx = (select midx from tbl_member where memberid = #{MemberId})
+        )
+    </delete>
+    <!-- 개인이 얼마나 남았는지 확인 -->
+    <select id="selectPareInInfo" resultType="com.project.SnakeProject.vo.MemberInInfoVo">
+        select nvl(musetime, 0) as museTime,
+               round(to_date(mendindate, 'YYYY-MM-DD HH24:mi:ss') - to_date(sysdate, 'YYYY-MM-DD HH24:mi:ss')) || '일 ' ||
+               round(mod(to_date(mendindate, 'YYYY-MM-DD HH24:mi:ss') - to_date(sysdate, 'YYYY-MM-DD HH24:mi:ss'),1) * 24) || '시간' as differnce
+        from tbl_memberininfo where midx = (select midx from tbl_member where MemberId = #{MemberId})
+    </select>
+    <!-- 개인 시간 충전 list 가져오기 -->
+    <select id="selectPareInfo" resultType="com.project.SnakeProject.vo.StudyInPareVo">
+        select sipidx,
+               concat(concat(REPLACE(REPLACE(REGEXP_SUBSTR(sipname, '\(.+\)'), '('), '권)'), ' 이용권'), REGEXP_REPLACE(sipname, '\(.+\)')) as sipname,
+               REGEXP_REPLACE(REGEXP_REPLACE(REGEXP_REPLACE(REGEXP_REPLACE(sipname, '\(.+\)'), ' '), '시간'), '이용권') as sipname2,
+               sipprice
+        from tbl_studyinpare
+    </select>
+
+    <!-- merge 문 update -->
+    <!-- 개인 시간 충전 테이블에 데이터가 있으면 update -->
+    <update id="inupdate" parameterType="java.util.HashMap">
+        merge into tbl_memberininfo tmi
+        using (
+        select midx from tbl_member where MemberId = #{MemberId}
+        ) src
+        on (tmi.midx = src.midx)
+        when matched then
+        <choose>
+            <when test='SIPName == "4주"'>
+                update set
+                tmi.mstateindate =
+                case when tmi.mendindate > sysdate then tmi.mstateindate
+                else sysdate end,
+                tmi.mendindate =
+                case when tmi.mendindate > sysdate then to_char(to_date(tmi.mendindate, 'YYYY-MM-DD') + 28)
+                else to_char(to_date(sysdate,'YYYY-MM-DD') + 28) end
+            </when>
+            <when test='SIPName == "8주"'>
+                update set
+                tmi.mstateindate =
+                case when tmi.mendindate > sysdate then tmi.mstateindate
+                else sysdate end,
+                tmi.mendindate =
+                case when tmi.mendindate > sysdate then to_char(to_date(tmi.mendindate, 'YYYY-MM-DD') + 56)
+                else to_char(to_date(sysdate,'YYYY-MM-DD') + 56) end
+            </when>
+            <otherwise>
+                update set tmi.MUseTime = tmi.MUseTime + #{SIPName}
+            </otherwise>
+        </choose>
+        when not matched then
+        <choose>
+            <when test='SIPName == "4주"'>
+                insert (
+                tmi.midx,
+                tmi.mstateindate,
+                tmi.mendindate
+                ) values (src.midx,  sysdate, to_char(to_date(sysdate,'YYYY-MM-DD HH24:mi:ss') + 28))
+            </when>
+            <when test='SIPName == "8주"'>
+                insert (
+                tmi.midx,
+                tmi.mstateindate,
+                tmi.mendindate
+                ) values (src.midx,  sysdate, to_char(to_date(sysdate,'YYYY-MM-DD HH24:mi:ss') + 56))
+            </when>
+            <otherwise>
+                insert (
+                tmi.midx,
+                tmi.MuseTime
+                ) values (src.midx,  #{SIPName})
+            </otherwise>
+        </choose>
+    </update>
+
+    <select id="memberAlarm" resultType="MemberAlarmVo">
+        select * from Tbl_Member_Alarm where MIdx = (select MIdx from Tbl_Member where MemberId = #{MemberId})
+    </select>
+
+</mapper>

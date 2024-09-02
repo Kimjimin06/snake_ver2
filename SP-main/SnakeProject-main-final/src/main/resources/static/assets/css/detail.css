@@ -1,0 +1,67 @@
+/*.details {*/
+/*background: url('../img/study.jpg');*/
+/*background-position: center;*/
+/*background-size : cover;*/
+/*color: #0b1f66;*/
+/*font-family: "Black Han Sans", sans-serif;*/
+/*margin: 0;*/
+/*padding: 40px;*/
+/*}*/
+/*@import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap');*/
+/*@font-face {*/
+/*    font-family: "Black Han Sans";*/
+/*    font-style: normal;*/
+/*    font-weight: 400;*/
+/*    font-display: swap;*/
+/*    !*src:url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap');*!*/
+/*    src: url('https://fonts.gstatic.com/s/blackhansans/v17/ea8Aad44WunzF9a-dL6toA8r8nqQSWKmEJKy1nK6J8sYUGdTBHS2osQ.2.woff2') format('woff2');*/
+/*}*/
+.container-detail2 {
+    font-family: "Black Han Sans", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+.container-info{
+    display: flex;
+    align-items: center; /* 세로 중앙 정렬 */
+    justify-content: center;
+    font-size: x-large;
+}
+
+.separator {
+    width: 200px; /* 수평선의 길이 조절 */
+    height: 1px; /* 수평선의 두께 조절 */
+    background-color: #6c757d; /* 수평선의 색상 설정 */
+    margin: 0 10px; /* 텍스트와 수평선 사이 간격 조절 */
+}
+.section {
+    background: url('../img/study.jpg');
+    max-width: 1300px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0px 4px 5px;
+    margin: 150px auto 50px auto ;
+    opacity: 0.85;
+}
+.menu-title h2 {
+    display:inline-block;
+    margin: 40px 50px;
+    font-family: "Black Han Sans", sans-serif;
+}
+.choice-title-kind {
+    /*margin-left: 40px;*/
+    text-align:center;
+}
+.choice-title-kind > .ticket {
+    font-family: "Black Han Sans", sans-serif;
+}
+.g-2{
+    margin-bottom: 20px;
+}
+.logo{
+    margin: 0px 50px;
+}
+
+/*span{*/
+/*    font-family: "Black Han Sans", sans-serif;*/
+/*}*/

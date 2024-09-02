@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${title}"></title>
+    <link th:href="@{/assets/css/join2.css}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<div class="member">
+    <form action="/join2" method="post" name="checkform" onsubmit="return validateForm()">
+        <!-- 필드 -->
+        <div class="field">
+            <b>아이디</b>
+            <div class="name-container">
+                <input type="text" class="userId" id="userId" placeholder="아이디" name="memberId" >
+                <div class="idcheck">
+                    <button type="button" class="idcheckbtn" onclick="idcheck()">중복확인</button>
+                </div>
+            </div>
+            <div id="idMsg" class="error-message"></div>
+        </div>
+        <div class="field">
+            <b>비밀번호</b>
+            <input class="userpw" name="memberPw" type="password" placeholder="비밀번호">
+            <div id="pwMsg" class="error-message"></div>
+        </div>
+        <div class="field">
+            <b>비밀번호 재확인</b>
+            <input class="userpw-confirm" name="memberconPw" type="password" placeholder="비밀번호 재확인">
+            <div id="pwcheckMsg" class="error-message1"></div>
+        </div>
+        <div class="field">
+            <b>이름</b>
+            <div class="name-container">
+                <input type="text" placeholder="이름" name="memberName" class="name-input">
+                <div class="gender1">
+                    <select name="memberSex">
+                        <option value="0">남자</option>
+                        <option value="1" selected>여자</option>
+                    </select>
+                </div>
+            </div>
+            <div id="nameMsg" class="error-message"></div>
+        </div>
+        <div class="field">
+            <b>
+                전화번호
+                <div class="error-message">
+                    <span>'-' 을 빼고 작성해주세요.</span>
+                </div>
+            </b>
+
+            <input type="tel" class="phone" name="memberPhone" maxlength="11" placeholder="전화번호">
+            <div id="phoneMsg" class="error-message"></div>
+
+        </div>
+        <!-- (생년월일) -->
+        <!--
+            <div class="field birth">
+                <b>생년월일</b>
+                <div>
+                    <input type="number" placeholder="년(4자)" maxlength="4">
+                    <select>
+                        <option value="">월</option>
+                        <option th:each="i : ${#numbers.sequence(1,12)}" th:value="${i}">
+                            <span th:value="${i}" th:text="${i}+월"></span>
+                        </option>
+                    </select>
+                    <select>
+                        <option value="">일</option>
+                        <option th:each="i : ${#numbers.sequence(1,31)}" th:value="${i}">
+                            <span th:text="${i}+일"></span>
+                        </option>
+                    </select>
+                </div>
+            <div id="birthMsg" class="error-message1"></div>
+            </div>
+        -->
+        <!-- 가입하기 버튼 -->
+        <input type="submit" id="join" class="join" value="가입하기">
+    </form>
+</div>
+
+<script>
+    function idcheck() {
+        const f = document.checkform;
+
+        const userId = document.getElementById("userId");
+        const idMsg = document.getElementById("idMsg");
+
+
+        // $("#userId").on("focusout", function() {
+        if(f.memberId.value == "" || f.memberId.length == 0) {
+            idMsg.textContent = "공백은 ID로 사용할 수 없습니다.";
+            return false;
+        } else {
+            $.ajax({
+                url: '/ConfirmId',
+                data: {
+                    id:f.memberId.value
+                },
+                type : 'POST',
+                dataType : 'json',
+                success : function(result) {
+                    if(result == true) {
+                        idMsg.textContent = "사용 가능한 ID입니다.";
+                    } else {
+                        idMsg.textContent = "사용 불가능한 ID입니다.";
+                        userId.textContent = "";
+                        return false;
+                    }
+                }
+            });
+        }
+        // });
+    }
+    function validateForm() {
+        const f = document.checkform;
+
+        const idMsg = document.getElementById("idMsg");
+        const pwMsg = document.getElementById("pwMsg");
+        const pwcheckMsg = document.getElementById("pwcheckMsg");
+        const nameMsg = document.getElementById("nameMsg");
+        const phoneMsg = document.getElementById("phoneMsg");
+        // const birthMsg = document.getElementById("birthMsg");
+
+        const errorMessage = document.querySelector('.error-message');
+        const errorMessage1 = document.querySelector('.error-message1');
+
+        // if (userId === "" || userPw === "" || name === "" || phone === "" || birth === "") {
+
+        if (f.memberId.value == "") {
+            idMsg.textContent = "아이디는 필수 입력 사항입니다.";
+            f.memberId.focus();
+            return false;
+        } else {
+            idMsg.style.display = "none";
+        }
+
+        if (f.memberPw.value == "") {
+            pwMsg.textContent = "비밀번호는 필수 입력 사항입니다.";
+            f.memberPw.focus();
+            pwcheckMsg.textContent = "";
+            return false;
+        } else if (f.memberPw.value != f.memberconPw.value) {
+            pwcheckMsg.textContent = "비밀번호가 일치하지 않습니다.";
+            f.memberconPw.focus();
+            pwMsg.textContent = "";
+            return false;
+        } else {
+            pwMsg.textContent = "";
+            pwcheckMsg.textContent = "";
+        }
+
+        if (f.memberName.value == "") {
+            nameMsg.textContent = "이름은 필수 입력 사항입니다.";
+            f.memberName.focus();
+            return false;
+        } else {
+            nameMsg.style.display = "none";
+        }
+
+        if (f.memberPhone.value == "") {
+            phoneMsg.textContent = "전화번호는 필수 입력 사항입니다.";
+            f.memberPhone.focus();
+            return false;
+        } else {
+            phoneMsg.style.display = "none";
+        }
+    }
+
+    // 비밀번호 확인 함수
+    function checkPassword() {
+        var password = document.querySelector('.userpw').value;
+        var confirmPassword = document.querySelector('.userpw-confirm').value;
+        var errorMessage = document.querySelector('.error-message');
+
+        if (password !== confirmPassword) {
+            errorMessage.textContent = "비밀번호가 일치하지 않습니다.";
+            document.querySelector('.userpw').focus();
+        } else {
+            // 비밀번호가 일치하면 오류 메시지를 지움
+            errorMessage.textContent = "";
+        }
+    }
+
+    // 비밀번호 확인 함수를 비밀번호 재확인 입력란의 이벤트에 연결
+    document.querySelector('.userpw-confirm').addEventListener('blur', checkPassword);
+</script>
+</body>
+</html>

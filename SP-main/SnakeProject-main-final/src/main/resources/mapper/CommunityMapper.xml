@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.project.SnakeProject.mapper.CommunityMapper">
+
+    <resultMap id="MemberVo" type="MemberVo">
+        <constructor>
+            <arg column="MemberId" javaType="String" />
+            <arg column="MemberName" javaType="String" />
+        </constructor>
+    </resultMap>
+
+    <resultMap id="CommunityVo" type="CommunityVo">
+        <result column="ComIdx" property="ComIdx" />
+        <result column="ComCateIdx" property="ComCateIdx" />
+        <result column="MIdx" property="MIdx" />
+        <result column="ComToCount" property="ComToCount" />
+        <result column="ComintoDate" property="ComintoDate" />
+        <result column="ComTitle" property="ComTitle" />
+        <result column="ComContent" property="ComContent" />
+        <result column="Complace" property="Complace" />
+        <result column="ComRegDate" property="ComRegDate" />
+        <result column="ComDelDate" property="ComDelDate" />
+        <result column="ComUpDate" property="ComUpDate" />
+        <result column="ComStartDate" property="ComStartDate" />
+        <result column="ComEndDate" property="ComEndDate" />
+        <result column="memberCount" property="memberCount" />
+        <result column="TogetherMemberName" property="TogetherMemberName" />
+        <result column="TogetherMemberId" property="TogetherMemberId" />
+        <result column="ComAddress" property="ComAddress" />
+        <result column="ComZipcode" property="ComZipcode" />
+        <collection property="memberVo" resultMap="MemberVo" />
+    </resultMap>
+
+
+    <select id="ViewCommunity" resultType="com.project.SnakeProject.vo.CommunityVo">
+        SELECT
+        c.ComIdx,
+        c.ComCateIdx,
+        c.MIdx,
+        c.ComToCount,
+        c.ComintoDate,
+        c.ComTitle,
+        c.ComContent,
+        to_char(c.ComRegDate, 'YYYY-MM-DD HH24:MI') AS ComRegDate,
+        to_char(c.ComDelDate, 'YYYY-MM-DD HH24:MI') AS ComDelDate,
+        to_char(c.ComUpDate, 'YYYY-MM-DD HH24:MI') AS ComUpDate,
+        to_char(c.ComStartDate, 'YYYY-MM-DD HH24:MI') AS ComStartDate,
+        to_char(c.ComEndDate, 'YYYY-MM-DD HH24:MI') AS ComEndDate,
+        COUNT(ts.MIdx) AS MemberCount
+        FROM
+        Tbl_Community c
+        LEFT JOIN
+        Tbl_TogetherStudy ts
+        ON
+        c.ComIdx = ts.ComIdx
+        <if test="categoryID != 0">
+            WHERE
+            c.ComCateIdx = #{categoryID}
+        </if>
+        GROUP BY
+        c.ComIdx,
+        c.ComCateIdx,
+        c.MIdx,
+        c.ComToCount,
+        c.ComintoDate,
+        c.ComTitle,
+        c.ComContent,
+        c.ComRegDate,
+        c.ComDelDate,
+        c.ComUpDate,
+        c.ComStartDate,
+        c.ComEndDate
+        ORDER BY
+        c.ComIdx
+    </select>
+
+    <select id="ViewCommunityCategory" resultType="com.project.SnakeProject.vo.CommunityCategoryVo">
+        select * from TBL_COMMUNITY_CATEGORY where ComCateUseState = 'Y'
+    </select>
+    <select id="ViewTogetherStudy" parameterType="java.lang.Integer" resultType="com.project.SnakeProject.vo.TogetherStudyVo">
+        select * from Tbl_TogetherStudy where ComIdx = #{ComIdx}
+    </select>
+
+    <select id="ViewContent" resultMap="CommunityVo">
+        SELECT
+            c.ComIdx,
+            c.ComCateIdx,
+            c.MIdx,
+            c.ComToCount,
+            c.ComintoDate,
+            c.ComTitle,
+            c.ComContent,
+            c.Complace,
+            to_char(c.ComRegDate, 'YYYY-MM-DD') AS ComRegDate,
+            to_char(c.ComDelDate, 'YYYY-MM-DD HH24:MI') AS ComDelDate,
+            to_char(c.ComUpDate, 'YYYY-MM-DD HH24:MI') AS ComUpDate,
+            to_char(c.ComStartDate, 'YYYY-MM-DD HH24:MI') AS ComStartDate,
+            to_char(c.ComEndDate, 'YYYY-MM-DD HH24:MI') AS ComEndDate,
+            COUNT(ts.MIdx) AS MemberCount,
+            LISTAGG(m.MemberName, ', ') WITHIN GROUP (ORDER BY m.MemberId) AS TogetherMemberName,
+            LISTAGG(m.MemberId, ', ') WITHIN GROUP (ORDER BY m.MemberId) AS TogetherMemberId,
+            tm.MemberId AS MemberId,
+            tm.MemberName AS MemberName,
+            c.ComZipcode,
+            c.ComAddress
+        FROM
+            Tbl_community c
+            LEFT JOIN Tbl_TogetherStudy ts ON c.ComIdx = ts.ComIdx
+            LEFT JOIN Tbl_Member m ON m.MIdx = ts.MIdx
+            INNER JOIN Tbl_Member tm ON tm.MIdx = c.MIdx
+        WHERE
+            c.ComIdx = #{postNum}
+        GROUP BY
+            c.ComIdx,
+            c.ComCateIdx,
+            c.MIdx,
+            c.ComToCount,
+            c.ComintoDate,
+            c.ComTitle,
+            c.ComContent,
+            c.ComRegDate,
+            c.ComDelDate,
+            c.ComUpDate,
+            c.ComStartDate,
+            c.ComEndDate,
+            c.Complace,
+            tm.MemberId,
+            tm.MemberName,
+            c.ComZipcode,
+            c.ComAddress
+    </select>
+
+    <!-- 해당 post페이지의 댓글정보를 가져오는 sql -->
+    <select id="ViewCommunityComment" resultType="CommunityCommentVo">
+        SELECT tcc.CCIdx,
+               tcc.ComIdx,
+               tcc.CCRefNum,
+               tcc.CCNum,
+               tcc.CCGroupNum,
+               tcc.CCContent, 
+               tm.MemberName, 
+               to_char(tcc.CCRegDate, 'YYYY-MM-DD HH24:MI') AS CCRegDate,
+               to_char(tcc.CCUpDate, 'YYYY-MM-DD HH24:MI') AS CCUpDate,
+               to_char(tcc.CCDelDate, 'YYYY-MM-DD HH24:MI') AS CCDelDate
+        FROM Tbl_Community_Comment tcc 
+            INNER JOIN Tbl_Member tm ON tcc.Midx = tm.Midx
+        WHERE tcc.Comidx = #{postNum}
+    </select>
+
+    <insert id="insertTogether" parameterType="map">
+        insert into Tbl_TogetherStudy values ((select MIdx from Tbl_member where MemberId = #{sessionId}), #{parameterPostNum})
+    </insert>
+
+    <update id="updatePost" parameterType="Map">
+        update tbl_community
+        set
+            ComTitle = #{communityVo.comTitle},
+            ComCateIdx = #{communityVo.comCateIdx},
+            ComContent = #{communityVo.comContent},
+            ComToCount = #{communityVo.comToCount},
+            ComStartDate = to_date(#{communityVo.comStartDate}, 'YYYY-MM-DD HH24:MI'),
+            ComEndDate = to_date(#{communityVo.comEndDate}, 'YYYY-MM-DD HH24:MI'),
+            comPlace = #{communityVo.Complace},
+            ComZipcode = #{communityVo.ComZipcode},
+            ComAddress = #{communityVo.ComAddress}
+        where ComIdx = #{parameterPostNum}
+    </update>
+
+
+    <delete id="DeleteToMember" parameterType="java.util.HashMap">
+        <if test="MemberId != null and MemberId.size() > 0">
+            delete from Tbl_TogetherStudy
+            where ComIdx = #{parameterPostNum}
+                and MIdx in (select MIdx from Tbl_Member where
+            <foreach collection="MemberId" item="Memberid" close=")" separator="or">
+                MemberId = #{Memberid}
+            </foreach>
+        </if>
+    </delete>
+
+<!--    해당 tbl_togetherstudy테이블의 comidx컬럼에 casecade설정을 해놓았기 때문에 tbl_community테이블에서 -->
+<!--    데이터를 지우게 되면 해당되는 tbl_togetherstudy테이블의 데이터도 지워짐.-->
+    <delete id="DelelteContent" parameterType="java.lang.Integer">
+        delete tbl_community where comidx = #{postNum}
+    </delete>
+
+
+    <insert id="insertContent" parameterType="CommunityVo">
+        insert into tbl_community
+            (ComIdx, ComCateIdx, MIdx, ComTitle, ComContent,
+              ComDelDate, ComUpDate, ComintoDate, ComRegDate,
+             ComToCount, ComStartDate, ComEndDate, ComAddress
+             <if test="ComZipcode != null">
+                 , ComZipcode
+             </if>
+             <if test="Complace != null">
+                 , Complace
+             </if>
+             )
+        values
+            (c##snake.Com_seq.NEXTVAL, #{ComCateIdx}, (select Midx from Tbl_Member where MemberId = #{sessionId}), #{ComTitle},
+             #{ComContent},  to_date('9999-12-31', 'YYYY-MM-DD'), to_date('9999-12-31', 'YYYY-MM-DD'), 0, SYSDATE, #{ComToCount},
+             to_date(#{ComStartDate}, 'YYYY-MM-DD HH24:MI'), to_date(#{ComEndDate}, 'YYYY-MM-DD HH24:MI'), #{ComAddress}
+             <if test="ComZipcode != null">
+                , #{ComZipcode}
+             </if>
+             <if test="Complace != null">
+                , #{Complace}
+             </if>
+            )
+    </insert>
+
+    <insert id="insertComment" parameterType="CommunityVo">
+        
+    </insert>
+</mapper>

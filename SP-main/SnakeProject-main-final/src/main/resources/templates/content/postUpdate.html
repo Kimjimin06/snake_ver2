@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}"
+>
+<head>
+  <title>Order Page</title>
+<!--  <script defer src="/assets/js/?"></script>-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</head>
+<th:block layout:fragment="content">
+    <section class="postUpdate">
+        <main id="main">
+            <div class="container postUpdate-containser">
+                <form th:action="@{/postRewrite(postNum=${parameterPostNum}, MemberId=${MemberId})}" method="post" th:each="content : ${communityTable}">
+                    <h4 class="page-subject">post 수정페이지입니다.</h4>
+
+                    <h5>*게시글 제목</h5>
+                    <input type="text" id="title" name="comTitle" placeholder="제목입니다." th:value="${content.comTitle}" required>
+
+                    <h5>*소개(내용)</h5>
+                    <textarea id="content" name="comContent" placeholder="소개/내용" th:text="${content.comContent}"></textarea>
+
+                    <!--                <h5>*태그</h5>-->
+                    <!--                <div class="postUpdate-tag">-->
+                    <!--                  <div class="tags-input-container">-->
+                    <!--                      <div id="tags-list"></div>-->
+                    <!--                      <input type="text" id="tags-input" placeholder="#태그를 입력하세요" />-->
+                    <!--                  </div>-->
+                    <!--                </div>-->
+
+
+                    <h5>*모임장소</h5>
+<!--                    밑에 div는 모임의 사람이 있을때만 보여줘야 한다.-->
+                    <div>
+                        <p>※ 추천은 그룹멤버들의 중간지점을 나타냅니다.</p>
+                        <p>추천 위치: 서울시 양천구</p>
+                    </div>
+
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="온라인" >
+                        <label class="form-check-label" for="inlineRadio1">온라인</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="스터디룸">
+                        <label class="form-check-label" for="inlineRadio2">스터디룸</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3">
+                        <label class="form-check-label" for="inlineRadio2">상세주소</label>
+                    </div>
+
+                    <div id="studyroom-cards-container">
+                        <div class="postUpdate-studyroom-card" >
+                            <div class="row">
+                                <th:block th:each="group, index : ${groupTable}">
+                                    <div class="col-sm-3">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h5 class="card-title">스터디룸</h5>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" name="studyroomSelection" th:id="inlineRadio4" th:value="${group.SGIContent1}">
+                                                    <label class="form-check-label" th:for="inlineRadio4" th:text="${group.SGIContent1}"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </th:block>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="flex-col">
+                        <div id="postUpdate-address" class="postUpdate-location-container">
+                            <input type="text" id="sample6_postcode" class="readonly" name="ComZipcode" placeholder="우편번호" tabindex="-1">
+                            <input type="button" name="" onclick="sample6_execDaumPostcode()" value="우편번호 찾기"><br>
+                            <input type="text" name="ComAddress" id="sample6_address" class="readonly" placeholder="주소" tabindex="-1"><br>
+                            <input type="text" name="Complace" id="sample6_detailAddress" placeholder="상세주소">
+                            <input type="hidden" name="" id="sample6_extraAddress">
+                        </div>
+                    </div>
+                    <h5 style="margin-top: 30px;">*모집인원</h5>
+                    <div class="post-peopleNumber"></div>
+
+                    <div class="participate-people-">
+
+                        <div class="postUpdate-in-container">
+                            <th:block th:each="membername, index : ${MemberName}">
+                                <div class="postUpdate-name-container">
+                                    <div class="post-people" th:text="${membername}"></div>
+                                    <input type="hidden" name="MemberIdList" th:value="${MemberId[index.index]}">
+                                    <i class="bi bi-x-lg"></i>
+                                </div>
+                            </th:block>
+                        </div>
+
+                        <div class="participate-people-wrap">
+                            <p class="">현재인원</p>
+                            <div class="">
+                                <input id="currentPeopleCount" type="number" name="" th:value="${content.memberCount + 1}" readonly>
+                                <p class="">명</p>
+                            </div>
+                            <p class="">/</p>
+                            <p class="">모집인원</p>
+                            <div class="">
+                                <input type="number" name="comToCount" th:value="${content.comToCount}" min="0" max="5">
+                                <p class="">명</p>
+                            </div>
+                        </div>
+                        <p class="">※ 모집인원은 본인 포함입니다.</p>
+
+
+                        <!--        <div class="post-peopleGroup">-->
+                        <!--          <div class="participate-people">홍길동</div>-->
+                        <!--          <div class="participate-people">홍길동</div>-->
+                        <!--        </div>-->
+
+                        <h5>*일시</h5>
+                        <div class="information datetime-startend">
+<!--                            <input type="datetime-local" id="information-start" name="information-start" value="2024-01-01T22:00">-->
+                            <input type="datetime-local" id="information-start" name="comStartDate" th:value="${content.comStartDate}">
+<!--                            <input type="datetime-local" id="information-end" name="information-end" value="2024-01-01T22:00">-->
+                            <input type="datetime-local" id="information-end" name="comEndDate" th:value="${content.comEndDate}">
+
+                        </div>
+
+                        <h5>*카테고리</h5>
+                        <div class="category-choice-wrap">
+                            <select class="form-select" name="ComCateIdx">
+                                <th:block th:each="category : ${categoryTable}">
+                                    <option th:selected="${category.comCateIdx == content.comCateIdx}" th:text="${category.comCateName}" th:value="${category.comCateIdx}"></option>
+                                </th:block>
+                                <!--                  <option selected>Open this select menu</option>-->
+                                <!--                  <option value="1">One</option>-->
+                                <!--                  <option value="2">Two</option>-->
+                                <!--                  <option value="3">Three</option>-->
+                            </select>
+                        </div>
+
+
+                        <div class="btn-group btn-postUpdategroup-wrap">
+                            <div id="previousButton" class="btn btn-setgroup btn-light">이전</div>
+<!--                            <button class="participateButton btn btn-setgroup btn-light">참여하기</button>-->
+<!--                            <button class="participateButton btn btn-setgroup btn-light">수정</button>-->
+                            <button id="successButton" type="submit" class="btn btn-setgroup btn-light">완료</button>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </main>
+    </section>
+
+
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script th:inline="javascript">
+      function sample6_execDaumPostcode() {
+        new daum.Postcode({
+          oncomplete: function (data) {
+            // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+            // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+            // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+            var addr = ''; // 주소 변수
+            var extraAddr = ''; // 참고항목 변수
+
+            //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+            if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+              addr = data.roadAddress;
+            } else { // 사용자가 지번 주소를 선택했을 경우(J)
+              addr = data.jibunAddress;
+            }
+
+            // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
+            if (data.userSelectedType === 'R') {
+              // 법정동명이 있을 경우 추가한다. (법정리는 제외)
+              // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+              if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
+                extraAddr += data.bname;
+              }
+              // 건물명이 있고, 공동주택일 경우 추가한다.
+              if (data.buildingName !== '' && data.apartment === 'Y') {
+                extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+              }
+              // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+              if (extraAddr !== '') {
+                extraAddr = ' (' + extraAddr + ')';
+              }
+              // 조합된 참고항목을 해당 필드에 넣는다.
+              document.getElementById("sample6_extraAddress").value = extraAddr;
+
+            } else {
+              document.getElementById("sample6_extraAddress").value = '';
+            }
+
+            // 우편번호와 주소 정보를 해당 필드에 넣는다.
+            document.getElementById('sample6_postcode').value = data.zonecode;
+            document.getElementById("sample6_address").value = addr;
+            // 커서를 상세주소 필드로 이동한다.
+            document.getElementById("sample6_detailAddress").focus();
+          }
+        }).open();
+      }
+
+      // 모음장소 라디오버튼 클릭
+      document.getElementById('inlineRadio1').addEventListener('change', function () {
+        if (this.checked) {
+          document.getElementById('studyroom-cards-container').style.display = 'none';
+          document.getElementById('postUpdate-address').style.display = 'none';
+
+          document.getElementById('sample6_postcode').removeAttribute('required', 'true');
+          document.getElementById('sample6_address').removeAttribute('required', 'true');
+          // document.getElementById('inlineRadio4').removeAttribute('required');
+          // document.getElementById('sample6_postcode').removeEventListener('keydown', preventDefaultAction);
+          // document.getElementById('sample6_postcode').removeEventListener('keypress', preventDefaultAction);
+          // document.getElementById('sample6_postcode').removeEventListener('paste', preventDefaultAction);
+          // document.getElementById('sample6_address').removeEventListener('keydown', preventDefaultAction);
+          // document.getElementById('sample6_address').removeEventListener('keypress', preventDefaultAction);
+          // document.getElementById('sample6_address').removeEventListener('paste', preventDefaultAction);
+        }
+      })
+      document.getElementById('inlineRadio2').addEventListener('change', function () {
+        if (this.checked) {
+          document.getElementById('studyroom-cards-container').style.display = 'block';
+          document.getElementById('postUpdate-address').style.display = 'none';
+
+          document.getElementById('sample6_postcode').removeAttribute('required', 'true');
+          document.getElementById('sample6_address').removeAttribute('required', 'true');
+          // document.getElementById('inlineRadio4').setAttribute('required', 'ture');
+          // document.getElementById('sample6_postcode').removeEventListener('keydown', preventDefaultAction);
+          // document.getElementById('sample6_postcode').removeEventListener('keypress', preventDefaultAction);
+          // document.getElementById('sample6_postcode').removeEventListener('paste', preventDefaultAction);
+          // document.getElementById('sample6_address').removeEventListener('keydown', preventDefaultAction);
+          // document.getElementById('sample6_address').removeEventListener('keypress', preventDefaultAction);
+          // document.getElementById('sample6_address').removeEventListener('paste', preventDefaultAction);
+        }
+      })
+      document.getElementById('inlineRadio3').addEventListener('change', function () {
+        if (this.checked) {
+          document.getElementById('studyroom-cards-container').style.display = 'none';
+          document.getElementById('postUpdate-address').style.display = 'block';
+
+          document.getElementById('sample6_postcode').setAttribute('required', 'true');
+          document.getElementById('sample6_address').setAttribute('required', 'true');
+          // document.getElementById('inlineRadio4').removeAttribute('required');
+        }
+      })
+
+      //초기상태
+      if (document.getElementById('inlineRadio1').checked) {
+        document.getElementById('studyroom-cards-container').style.display = 'none';
+        document.getElementById('postUpdate-address').style.display = 'none';
+      } else if (document.getElementById('inlineRadio3').checked) {
+        document.getElementById('studyroom-cards-container').style.display = 'none';
+        document.getElementById('postUpdate-address').style.display = 'block';
+      } else if (document.getElementById('inlineRadio2').checked) {
+        document.getElementById('studyroom-cards-container').style.display = 'block';
+        document.getElementById('postUpdate-address').style.display = 'none';
+      }
+
+      // 인원 x 표시 현재인원 동적으로 변경
+      document.addEventListener('DOMContentLoaded', function () {
+        function updateCurrentPeopleCount() {
+          var currentPeopleCount = document.querySelectorAll('.postUpdate-name-container').length;
+          document.getElementById('currentPeopleCount').value = currentPeopleCount;
+        }
+
+        function handleIconClick(event) {
+          var container = event.target.closest('.postUpdate-name-container');
+          if (container) {
+            container.remove();
+            updateCurrentPeopleCount();
+          }
+        }
+
+        updateCurrentPeopleCount();
+
+        var closeIcons = document.querySelectorAll('.postUpdate-name-container');
+        closeIcons.forEach(function (icon) {
+          icon.addEventListener('click', handleIconClick);
+        });
+
+        const comAddressRs = [[${comAddressRs}]];
+        const comPlaceRs = [[${comPlaceRs}]];
+        const comZipCodeRs = [[${comZipCodeRs}]];
+
+
+        if (comPlaceRs == '온라인') {
+          document.getElementById('inlineRadio1').checked = true;
+          document.getElementById('studyroom-cards-container').style.display = 'none';
+          document.getElementById('postUpdate-address').style.display = 'none';
+        } else if (comPlaceRs.replace(/\([^)]+\)/, "").trim() == '스터디룸') {
+          document.getElementById('inlineRadio2').checked = true;
+          document.getElementById('studyroom-cards-container').style.display = 'block';
+          document.getElementById('postUpdate-address').style.display = 'none';
+
+          const radioButtons = document.querySelectorAll('input[name="studyroomSelection"]');
+
+          radioButtons.forEach(function(radio) {
+            console.log(radio.value);
+            if (radio.value === comPlaceRs.match(/\(([^)]+)\)/)[1]) {
+              radio.checked = true;
+            }
+
+            document.getElementById('sample6_postcode').value = comZipCodeRs;
+            document.getElementById('sample6_address').value = comAddressRs;
+            document.getElementById('sample6_detailAddress').value = comPlaceRs;
+          });
+
+        } else {
+          document.getElementById('inlineRadio3').checked = true;
+          document.getElementById('studyroom-cards-container').style.display = 'none';
+          document.getElementById('postUpdate-address').style.display = 'block';
+
+          document.getElementById('sample6_postcode').value = comZipCodeRs;
+          document.getElementById('sample6_address').value = comAddressRs;
+          document.getElementById('sample6_detailAddress').value = comPlaceRs;
+        }
+
+      });
+
+
+      const previousButton = document.getElementById("previousButton")
+
+      previousButton.addEventListener('click', function () {
+        window.history.back()
+      })
+
+
+      $(".readonly").on('keydown keypress paste focus mousedown', function (e) {
+        e.preventDefault();
+      });
+
+
+
+
+    </script>
+
+
+</th:block>
+</html>

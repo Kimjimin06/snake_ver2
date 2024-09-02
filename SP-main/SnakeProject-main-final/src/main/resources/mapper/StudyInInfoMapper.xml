@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.project.SnakeProject.mapper.StudyInInfoMapper">
+    <select id="ViewStudyInInfo" resultType="com.project.SnakeProject.vo.StudyInInfoVo">
+        SELECT * FROM Tbl_StudyInInfo
+    </select>
+    <update id="UpdateLiveInfo">
+        update tbl_studyininfo set
+                                   seatusestate = 'N',
+                                   seatstarttime = null,
+                                   seatendtime = null
+        where to_date(sysdate, 'YYYY-MM-DD HH24:mi:ss') > seatendtime
+    </update>
+    <!-- // 예약된 자리가 있으면 막아주기 위해 확인하는 select -->
+    <select id="selectStudyInInfo" resultType="java.lang.Integer" parameterType="map">
+        select count(*) from tbl_studyininfo tsi
+                                 left join tbl_memberininfo tmi on tsi.seatnum = tmi.seatnum
+                                 inner join tbl_member tm on tm.midx = tmi.midx
+        where tm.midx = (select midx from tbl_member where memberid = #{MemberId})
+    </select>
+    <!-- 회원이 선택한 시간이 충전한 금액만큼 존재하고 있는지 확인하는 쿼리 -->
+    <select id="selectTime" resultType="java.lang.Integer" parameterType="java.util.HashMap">
+        select count(*) from tbl_memberininfo where
+            midx = (select midx from tbl_member where MemberId = #{MemberId}) and
+            nvl(MuseTime, 0) >= #{MuseTime} OR
+            to_date(sysdate, 'YYYY-MM-DD HH24:mi:ss') between
+            to_date(mstateindate, 'YYYY-MM-DD HH24:mi:ss') and to_date(mendindate, 'YYYY-MM-DD HH24:mi:ss')
+    </select>
+    <!-- 회원이 선택한 시간을 충전한 금액에서 빼는 쿼리 -->
+    <update id="UpdateInTime" parameterType="java.util.HashMap">
+        update tbl_memberininfo set musetime =
+                                        case when musetime >= #{MuseTime} then musetime - #{MuseTime}
+                                             else musetime - 0 end
+        where midx = (select midx from tbl_member where memberid = #{MemberId})
+    </update>
+    <!-- 자리를 Y로 변경하고, memberininfo 에 seatnum에 예약한 자리 번호를 넣어준다. -->
+    <update id="UpdateStudyInInfo" parameterType="map">
+        UPDATE Tbl_StudyInInfo SET SeatUseState = 'Y',
+                                   SeatStartTime = to_date(#{SeatStartTime}, 'YYYY-MM-DD HH24:mi:ss'),
+                                   SeatEndTime = to_date(#{SeatEndTime}, 'YYYY-MM-DD HH24:mi:ss')
+        WHERE SCIdx = 1111 and SeatNum = (select SeatNum from Tbl_StudyInInfo where SIINum = #{SIINum})
+    </update>
+    <update id="UpdateMemberInInfo" parameterType="map">
+        update Tbl_MemberInInfo set
+            SeatNum = (select SeatNum from Tbl_StudyInInfo where SIINum = #{SIINum})
+        where midx = (select midx from tbl_member where MemberId = #{MemberId})
+    </update>
+</mapper>

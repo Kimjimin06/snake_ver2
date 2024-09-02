@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}"
+>
+<head>
+    <title>Order Page</title>
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <script defer src="/assets/js/post.js"></script>
+</head>
+<th:block layout:fragment="content">
+    <section class="post">
+        <main id="main">
+            <div class="container">
+                <th:block th:each="content : ${ViewContent}">
+                    <div class="post-header">
+                        <h4 class="page-subject">게시판</h4>
+<!--                        <h4 class="post-title">📢 제목입니다.</h4>-->
+                        <h4 class="post-title" th:text="'📢' + ${content.comTitle}"></h4>
+<!--                        <h5 class="post-author">작성자: 홍길동</h5>-->
+                        <h5 class="post-author" th:text="${content.memberVo.memberName}"></h5>
+                    </div>
+
+                    <div class="post-info">
+                        <div class="post-cal-people">
+<!--                            <div class="post-peopleNumber">👥 참여 인원: 1 / 5</div>-->
+                            <div class="post-peopleNumber" th:text="'👥' + ${content.memberCount + 1} + ' / ' + ${content.comToCount}"></div>
+<!--                            <p class="post-createDate">🗓️ 게시글 작성날짜: 1111-11-11</p>-->
+                            <p class="post-createDate" th:text="'🗓️ 게시글 작성날짜: ' + ${content.comRegDate}"></p>
+                        </div>
+                        <div class="post-in-container">
+                            <div id="post-peopleGroup" class="post-peopleGroup">
+                                <div class="post-name-container">
+                                    <div class="people" th:text="${content.memberVo.memberName}"></div>
+                                </div>
+                                <div class="post-name-container" th:if="${TogetherMemberName}" th:each="TmemberName : ${TogetherMemberName}">
+                                    <div class="people" th:text="${TmemberName}"></div>
+                                </div>
+                            </div>
+
+<!--                            <div class="post-peopleGroup">-->
+<!--                                <div class="post-name-container">-->
+<!--                                    <div class="post-people">홍길동</div>-->
+<!--&lt;!&ndash;                                    <i class="bi bi-x-lg"></i>&ndash;&gt;-->
+<!--                                </div>-->
+<!--                                <div class="post-name-container">-->
+<!--                                    <div class="post-people">홍길동</div>-->
+<!--&lt;!&ndash;                                    <i class="bi bi-x-lg"></i>&ndash;&gt;-->
+<!--                                </div>-->
+<!--                            </div>-->
+                            <div class="information">
+<!--                                <div class="information-start"><i class="bi bi-calendar-check"></i>시작: 2222-2-22 22:00</div>-->
+                                <div class="information-start"><i class="bi bi-calendar-check"></i><span th:text="'시작: ' + ${content.comStartDate}"></span></div>
+<!--                                <div class="information-end"><i class="bi bi-calendar-x"></i> 종료: 2222-2-22 23:00</div>-->
+                                <div class="information-end"><i class="bi bi-calendar-x"></i><span th:text="'종료: ' + ${content.comEndDate}"></span></div>
+<!--                                <div class="information-place"><i class="bi bi-geo-alt-fill"></i> 장소: 스터디룸 2번</div>-->
+                                <div th:if= "${content.comAddress != null && content.ComZipcode != null}" class="information-place">
+                                    <i class="bi bi-geo-alt-fill"></i>
+                                    <span th:text="'장소: ' + ${content.comAddress} + ' (' + ${content.Complace} + ')'"></span>
+                                </div>
+                                <div th:unless= "${content.comAddress != null && content.ComZipcode != null}" class="information-place">
+                                    <i class="bi bi-geo-alt-fill"></i>
+                                    <span th:text="'장소: ' + ${content.Complace}"></span>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="post-content">
+                            <p th:text="${content.comContent}"></p>
+<!--                            <p>🎉 이곳에서 내용을 자유롭게 작성하세요! 다양한 정보를 공유하고, 의견을 나눠보세요. 😊</p>-->
+                        </div>
+
+                        <!-- 카카오맵 -->
+                        <div th:if= "${content.Complace != '온라인'}">
+                            <button onclick="location.href='https://map.kakao.com/?q='">카카오맵에서 보기</button>
+                            <div id="map" style="width:700px;height:350px;margin-bottom: 30px;"></div>
+
+                            <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=25737c0f6a592cc3859cf7a7c0ba3851"></script>
+                            <script>
+                                var mapContainer = document.getElementById('map'), // 지도를 표시할 div
+                                    mapOption = {
+                                    center: new kakao.maps.LatLng(37.3974841, 126.9092036), // 지도의 중심좌표
+                                    level: 3 // 지도의 확대 레벨
+                                    };
+
+                                // 지도를 표시할 div와  지도 옵션으로  지도를 생성합니다
+                                var map = new kakao.maps.Map(mapContainer, mapOption);
+
+                                // 마커가 표시될 위치입니다
+                                var markerPosition  = new kakao.maps.LatLng(37.3974841, 126.9092036);
+
+                                // 마커를 생성합니다
+                                var marker = new kakao.maps.Marker({
+                                position: markerPosition
+                                });
+
+                                // 마커가 지도 위에 표시되도록 설정합니다
+                                marker.setMap(map);
+
+                                // 아래 코드는 지도 위의 마커를 제거하는 코드입니다
+                                // marker.setMap(null);
+                            </script>
+                        </div>
+
+                        <div class="post-comment">
+                            <div>
+                                <p>Q&A (댓글개수)</p>
+                                <button type="button" id="comment-writeButton" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#Q&AModal">
+                                    질문 작성하기
+                                </button>
+
+                                <div class="modal fade" id="Q&AModal" tabindex="-1" aria-labelledby="Q&AModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="Q&AModalLabel">질문 작성하기</h1>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                질문(200자 이내)
+                                                <textarea id="text-area" name="userComment" maxlength="200"></textarea>
+                                                <p><i class="bi bi-exclamation-octagon"></i> 단, 예약에 대한 문의가 아닌 글은 무통보 삭제될 수 있습니다.</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                                                <button type="submit" form="questionForm" th:onclick="|location.href='@{/insertComment(postNum=${parameterPostNum})}'|" class="btn btn-primary">등록</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div th:each= "comment : ${viewComment}" class="comment-group">
+                                <div class="user-comment">
+                                    <p th:text="'작성자: ' + ${comment.memberName}"></p>
+                                    <p th:text="${comment.CCContent}"></p>
+                                    <p th:text="${comment.CCRegDate}"></p>
+                                </div>
+                                <div class="author-comment">
+                                    <p>호스트: 000</p>
+                                    <p>댓글에 대한 댓글내용입니다.</p>
+                                    <p>0000-00-00 00:00</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="post-btn-group">
+                            <button class="previousButton btn btn-light" onclick="goback()">⬅️ 이전</button>
+                            <button th:if="${(content.memberCount + 1) != (content.comToCount)}" class="participateButton btn btn-light" data-bs-toggle="modal" data-bs-target="#exampleModal">✔️ 참여하기</button>
+                            <th:block th:if="${session.userid} == ${content.memberVo.memberId}">
+                                <a th:href="@{/postUpdate(postNum=${parameterPostNum})}" type="button" class="participateButton btn btn-light">✏️ 수정</a>
+                                <a th:href="@{/postDelete(postNum=${parameterPostNum})}" class="participateButton btn btn-light">❌ 삭제</a>
+                            </th:block>
+                        </div>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel"><i class="bi bi-info-circle"></i> 정보</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        • 모임장의 연락처로 꼭 모임에 대한 내용을 확인 바랍니다. <br>
+                                        • 참여를 취소하는 경우 모임장에게 알려주세요. <br>
+                                        • 최소인원이 모집되어야 모임이 진행됩니다. <br>
+                                        <!--                                    • 모임 가이드에 맞지 않는 모임은 앱 문의를 통해 알려주세요. <br>-->
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                                        <button th:if="${session.userid}" id="togetherSuccess" type="button" class="btn btn-primary" data-bs-dismiss="modal" th:onclick="fc([[${isMember}]], [[${session.userid}]])">확인</button>
+                                        <button th:unless="${session.userid}" type="button" class="btn btn-primary"
+                                                data-bs-target="#mymodal" data-bs-toggle="modal" data-bs-dismiss="modal">확인</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </th:block>
+            </div>
+        </main>
+    </section>
+</th:block>
+
+</html>
