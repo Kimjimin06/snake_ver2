@@ -1,0 +1,78 @@
+.post {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.post-title{
+    display: flex;
+}
+.post-author{
+    display: flex;
+}
+.post-name-container{
+    display: flex;
+    margin-right: 3px;
+    border: 1px solid #cdcdcd;
+    border-radius: 10px;
+    padding: 3px;
+}
+.post-cal-people{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.post-in-container{
+    display: flex;
+    flex-direction: column;
+}
+.post-peopleGroup{
+    display: flex;
+}
+
+.post-header, .post-info, .post-btn-group {
+    margin-bottom: 20px;
+}
+.post-header {
+    text-align: center;
+}
+.post-info {
+    background-color: #f4f4f4;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #cbcbcb;
+}
+.information {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+}
+.information div {
+    flex: 1;
+    text-align: center;
+    margin: 2px 0;
+}
+.btn-group {
+    text-align: center;
+}
+
+.emoji {
+    font-size: 1.2em;
+    margin-right: 5px;
+}
+
+.post-btn{
+    border: 1px solid #cbcbcb;
+    margin: 30px 0 0 0;
+}
+.people-wrap{
+    background-color: #ffffff;
+    padding: 7px;
+    border-radius: 10px;
+    border: 1px solid #cbcbcb;
+    margin-right: 7px;
+}

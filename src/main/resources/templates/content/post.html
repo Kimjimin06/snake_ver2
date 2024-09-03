@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}"
+>
+<head>
+    <title>Order Page</title>
+    <script defer src="/assets/js/post.js"></script>
+</head>
+<th:block layout:fragment="content">
+    <section class="post">
+        <main id="main">
+            <div class="container">
+                <th:block th:each="content : ${ViewContent}">
+                    <h4 class="page-subject">post페이지입니다.</h4>
+
+<!--                    <h4 class="post-title">제목입니다.</h4>-->
+                    <h4 class="post-title" th:text="'📢' + ${content.comTitle}"></h4>
+
+<!--                    <h5 class="post-author">작성자</h5>-->
+                    <h5 class="post-author" th:text="${content.memberVo.memberName}"></h5>
+<!--                    <p class="post-createDate">게시글 작성날짜: 1111-11-11</p>-->
+                    <p class="post-createDate" th:text="'🗓️ 게시글 작성날짜: ' + ${content.comRegDate}"></p>
+
+<!--                    <div class="post-peopleNumber">1 / 5</div>-->
+                    <div class="post-peopleNumber" th:text="'👥' + ${content.memberCount + 1} + ' / ' + ${content.comToCount}"></div>
+
+<!--                    자바스크립트로 넘길 데이터값 명시해놓은 것-->
+<!--                    <div id="data-container1" th:data-name="${content.togetherMemberName}"></div>-->
+<!--                    <div id="data-container2" th:data-name="${content.togetherMemberId}"></div>-->
+
+                    <div id="post-peopleGroup" class="post-peopleGroup">
+                        <div class="people" th:text="${content.memberVo.memberName}"></div>
+                        <th:block th:if="${TogetherMemberName}" th:each="TmemberName : ${TogetherMemberName}">
+                            <div class="people" th:text="${TmemberName}"></div>
+                        </th:block>
+                    </div>
+
+                    <div class="information">
+<!--                        <div class="information-start"><i class="bi bi-calendar-check"></i>시작: 2222-2-22 22:00</div>-->
+                        <div class="information-start"><i class="bi bi-calendar-check"></i><span th:text="'시작: ' + ${content.comStartDate}"></span></div>
+<!--                        <div class="information-end"><i class="bi bi-calendar-x"></i>종료: 2222-2-22 23:00</div>-->
+                        <div class="information-end"><i class="bi bi-calendar-x"></i><span th:text="'종료: ' + ${content.comEndDate}"></span></div>
+<!--                        <div class="information-place"><i class="bi bi-geo-alt-fill"></i>장소: 스터디룸 2번</div>-->
+                        <div class="information-place"><i class="bi bi-geo-alt-fill"></i><span th:text="'장소: ' + ${content.complace}"></span></div>
+                    </div>
+
+                    <div class="content" th:text="${content.comContent}">
+                        내용부분
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="previousButton btn btn-light" onclick="goback()">⬅️ 이전</button>
+                        <button th:if="${(content.memberCount + 1) != (content.comToCount)}" class="participateButton btn btn-light" data-bs-toggle="modal" data-bs-target="#exampleModal">✔️ 참여하기</button>
+                        <th:block th:if="${session.userid} == ${content.memberVo.memberId}">
+                            <a th:href="@{/postUpdate(postNum=${parameterPostNum})}" type="button" class="participateButton btn btn-light">✏️ 수정</a>
+                            <button class="participateButton btn btn-light">❌ 삭제</button>
+                        </th:block>
+                    </div>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel"><i class="bi bi-info-circle"></i></h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    • 모임장의 연락처로 꼭 모임에 대한 내용을 확인 바랍니다. <br>
+                                    • 참여를 취소하는 경우 모임장에게 알려주세요. <br>
+                                    • 최소인원이 모집되어야 모임이 진행됩니다. <br>
+<!--                                    • 모임 가이드에 맞지 않는 모임은 앱 문의를 통해 알려주세요. <br>-->
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                                    <button th:if="${session.userid}" id="togetherSuccess" type="button" class="btn btn-primary" data-bs-dismiss="modal" th:onclick="fc([[${isMember}]], [[${session.userid}]])">확인</button>
+                                    <button th:unless="${session.userid}" type="button" class="btn btn-primary"
+                                            data-bs-target="#mymodal" data-bs-toggle="modal" data-bs-dismiss="modal">확인</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </th:block>
+            </div>
+        </main>
+    </section>
+
+</th:block>
+</html>

@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <title>Review Page</title>
+</head>
+<th:block layout:fragment="content">
+    <div class="container-detail1">
+        <div class="reviewhead row shadow">
+            <div class="cardhead">
+                <h4>예약 후기</h4>
+                <th:block th:if="${session.username != null}">
+                    <button class="reviewbtn" id="reviewbtn">후기 작성</button>
+                </th:block>
+            </div>
+            <div class="col-12">
+                <div class="reviewbody">
+                    <div class="row p-2">
+                        <th:block th:if="${review.size()} == 0">
+                            데이터 없음
+                        </th:block>
+                        <th:block th:if="${review.size()} != 0 ">
+                            <th:block th:each="review1 : ${review}">
+                                <div class="col-3" style="border: 1px solid black">
+                                    <a href="javascript:void(0)" th:onclick="'show(' + ${review1.SRIdx} + ')'">
+                                        <th:block th:if="${review1.studyReviewImgVo != null}">
+                                            <img th:src="${review1.studyReviewImgVo.SRIImgSrc} + ${review1.studyReviewImgVo.SRIImgName}" style="width: 235px; height: 200px;" >
+                                        </th:block>
+                                        <th:block th:if="${review1.studyReviewImgVo == null}">
+                                            <img th:src="${review1.studyGImgVo.SGImg}" style="width: 235px; height: 200px;" >
+                                        </th:block>
+                                    </a>
+                                    <div class="star">
+                                        <div class="rate">
+                                            <th:block th:each="star : ${review1.SRStar}">
+                                                <span th:each="i : ${#numbers.sequence(1, review1.SRStar)}">★</span>
+                                            </th:block>
+                                        </div>
+                                        <div>
+                                            <div class="nick">
+                                                <span>작성자 : <th:blcok th:text="${review1.MemberVo.MemberName}"></th:blcok></span>
+                                            </div>
+                                            <div class="roomname">
+                                                <span>방이름 : <th:block th:text="${review1.studyGInfoVo.SGIContent1}"></th:block></span>
+                                            </div>
+                                            <div class="time">
+                                                <span>작성일 : <th:block th:text="${review1.SRRegDate}"></th:block></span>
+                                            </div>
+<!--                                            <div class="title1" th:text="${review1.SRTitle}">후기 제목</div>-->
+<!--                                            <div class="body1" th:text="${review1.SRcontent}">후기 내용</div>-->
+                                        </div>
+                                    </div>
+                                </div>
+                            </th:block>
+                        </th:block>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- modal 작성 -->
+    <div class="modal fade" id="writereview" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="modaltitle">후기 작성</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="/reviewForm" method="post" name="reviewwirte">
+                        <div class="">방 선택</div>
+                            <select name="SGIContent1" id="SGIContent1" required>
+                                <!-- th:text="화성방" th:value="룸idx"  -->
+<!--                                <option value="">방을 선택하세요</option>-->
+                                <th:block th:each="contents : ${content}">
+                                    <option th:value="${contents.SGINum}" th:text="${contents.SGIContent1}"></option>
+                                </th:block>
+                            </select>
+                    <!--사진 업로드-->
+                        <div class="roomimg text-center">
+                            <div class="row appendimg">
+                                <th:block th:each="i : ${#numbers.sequence(1,4)}">
+                                    <div class="col-6">
+                                        <div class="upload">
+                                            <img src="/assets/img/selectImg.png" style="width: 100%; height:100%" th:id="'selectImg' + ${i}" onclick="photoFileCheck()">
+                                        </div>
+                                    </div>
+                                </th:block>
+                            </div>
+                        </div>
+                        <div>
+                            <input type="file" class="real-upload" id="camera" name="imgname" accept="image/*" />
+                        </div>
+                        <div class="starbox row">
+                            <div class="starsel">
+                                <!--별점 찍기 선택 -->
+                                <th:block th:each="i : ${#numbers.sequence(5, 1)}">
+                                    <input type="radio" th:id="'rating' + ${i}" name="SRStar" class="star1" th:value="${i}">
+                                    <label th:for="'rating' + ${i}" th:title="${i} + '점'">★︎</label>
+                                </th:block>
+                            </div>
+                            <div id="selectedScore" class="selectedScore">선택된 점수 : </div>
+                        </div>
+                        <div class="memo">
+                            <h4>리뷰</h4>
+                            <textarea type="text" name="SRTitle"  placeholder="제목을 입력해주세요..." class="memotitle"></textarea>
+                            <textarea type="text" name="SRcontent" placeholder="내용을 입력해주세요..." class="memotext"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">돌아가기</button>
+                    <button type="button" class="btn btn-primary" onclick="postReview()">작성</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 작성한 글 보여주는 modal -->
+    <div class="modal fade" id="picmodal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="exampleModalLabel">예약 후기</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body row">
+                    <!--모달 왼쪽-->
+                    <div class="col-12">
+                        <div class="slider__wrap">
+                            <div class="slider__img">
+                                <div class="slider__inner">
+<!--                                    이미지 슬라이더-->
+                                </div>
+                                <div class="slider__btn">
+                                    <a class="prev" title="이전이미지">prev</a>
+                                    <a class="next" title="다음이미지">next</a>
+                                </div>
+                                <div class="slider__dot"></div>
+                            </div>
+                        </div><!-- 이미지 슬라이드 -->
+<!--                        <img src="/assets/img/study-bg2.jpg" style="width: 370px; height: 350px;">-->
+                        <div class="modal-main content-main row-6">
+<!--                           content부분-->
+                        </div>
+                    </div>
+                    <!--모달 오른쪽-->
+<!--                    <div class="col-6">-->
+<!--                        <div class="row-6 contents">-->
+<!--                            <ul>-->
+<!--                                <li class="comment1">이름 댓글내용</li>-->
+<!--                                <li class="comment1">이름 댓글내용</li>-->
+<!--                                <li class="comment1">이름 댓글내용</li>-->
+<!--                                <li class="comment1">이름 댓글내용</li>-->
+<!--                                <li class="comment1">이름 댓글내용</li>-->
+<!--                                <li class="comment1">이름 댓글내용</li>-->
+<!--                                <li class="comment1">이름 댓글내용</li>-->
+<!--                                <li class="comment1">이름 댓글내용</li>-->
+<!--                                <li class="comment1">이름 댓글내용</li>-->
+<!--                                <li class="comment1">이름 댓글내용</li>-->
+<!--                                <li class="comment1">이름 댓글내용</li>-->
+<!--                            </ul>-->
+<!--                        </div>-->
+<!--                        <div class="comment">-->
+<!--                            <textarea type="text" placeholder="댓글 달기..." class="commenttext"></textarea>-->
+<!--                            <div class="ok" role="button">게시</div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">돌아가기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function slider() {
+            const sliderWrap = document.querySelector(".slider__wrap");
+            const sliderInner = sliderWrap.querySelector(".slider__inner");
+            const sliders = sliderWrap.querySelectorAll(".slider");
+            const sliderDot = sliderWrap.querySelector(".slider__dot");
+            const sliderBtn = sliderWrap.querySelectorAll(".slider__btn a");
+
+            let currentIndex = 0;
+            const sliderCount = sliders.length;
+            const sliderWidth = 780; // 슬라이드 이미지의 너비 설정 (사용자가 필요한 값으로 변경하세요)
+
+            function init() {
+                // 이미지 갯수만큼 닷 메뉴 생성
+                let dotIndex = "";
+                sliders.forEach(() => dotIndex += "<a href='#' class='dot'>이미지</a>");
+                sliderDot.innerHTML = dotIndex;
+
+                // 첫번째 닷 메뉴에 활성화 표시
+                sliderDot.firstChild.classList.add("active");
+            }
+
+            init();
+
+            function gotoSlider(num) {
+                // 슬라이드 이미지의 너비를 기반으로 이동 거리 계산
+                const translateXValue = -sliderWidth * num;
+                sliderInner.style.transition = "all 400ms";
+                sliderInner.style.transform = "translateX(" + translateXValue + "px)";
+                currentIndex = num;
+
+                // 닷 메뉴 활성화 처리
+                let dotActive = document.querySelectorAll(".slider__dot .dot");
+                dotActive.forEach((active) => active.classList.remove("active"));
+                dotActive[num].classList.add("active");
+            }
+
+
+            // 버튼 클릭 시 이벤트 핸들러
+            sliderBtn.forEach((btn, index) => {
+                btn.addEventListener("click", () => {
+                    // 이전(pre) 버튼 클릭 시
+                    if (btn.classList.contains("prev")) {
+                        let prevIndex = (currentIndex + sliderCount - 1) % sliderCount;
+                        gotoSlider(prevIndex);
+                    }
+                    // 다음(next) 버튼 클릭 시
+                    else {
+                        let nextIndex = (currentIndex + 1) % sliderCount;
+                        gotoSlider(nextIndex);
+                    }
+                });
+            });
+        }
+
+        //별 찍기 선택점수
+        $(document).ready(function() {
+            $('input[type="radio"]').change(function() {
+                const selectedScore = $(this).val();
+                $('#selectedScore').text('선택된 점수: ' + selectedScore + '점');
+            });
+
+        });
+        //사진눌렀을 때 모달생성
+        function show(id){
+            $(".content-main").empty();
+            $(".slider__inner").empty();
+            $(".slider__dot").empty();
+            $.ajax({
+                url:'/getReviewDetail',
+                type: 'GET',
+                data : {
+                    SRIdx : id
+                },
+                dataType: 'JSON',
+                success: function(result) {
+                    const data = JSON.parse(JSON.stringify(result));
+                    var imgArray = new Array();
+                    if(data[0].studyReviewImgVo != null) {
+                        imgArray.push(data[0].studyReviewImgVo.sriimgName.split(','));
+                        console.log(imgArray);
+                        for(let i = 0; i<imgArray.length; i++) {
+                            console.log(imgArray[i]);
+                            for(let j =0; j<imgArray[i].length; j++) {
+                                console.log(imgArray[i][j]);
+                                $(".slider__inner").append(
+                                    "<div class='slider s1'>" +
+                                        "<img src='" + data[0].studyReviewImgVo.sriimgSrc + imgArray[i][j] + "'>" +
+                                    "</div>"
+                                );
+                            }
+                        }
+                        slider();
+                    } else {
+                        $(".slider__inner").append(
+                            "<div class='slider s1'>" +
+                                "<img src='" + data[0].studyGImgVo.sgimg + "'>" +
+                            "</div>"
+                        )
+                    }
+
+                    $(".content-main").append(
+                        "<table class='table'>" +
+                            "<tr>" +
+                                "<th>스터디룸</th>" +
+                                "<td>"+ data[0].studyGInfoVo.sgicontent1 +"</td>" +
+                            "</tr>" +
+                            "<tr>" +
+                                "<th>작성일</th>" +
+                                "<td>" + data[0].srregDate + "</td>" +
+                            "</tr>" +
+                            "<tr>" +
+                                "<th>작성자</th>" +
+                                "<td>" + data[0].memberVo.memberName + "</td>" +
+                            "</tr>" +
+                            "<tr>" +
+                                "<th>제목</th>" +
+                                "<td>" + data[0].srtitle + "</td>" +
+                            "</tr>" +
+                            "<tr>" +
+                                "<th>내용</th>" +
+                                "<td>" + data[0].srcontent + "</td>" +
+                            "</tr>" +
+                        "</table>"
+                    );
+
+                    $("#picmodal").modal("show");
+                }, error: function (error) {
+                    console.log(error);
+                }
+            })
+
+        }
+
+        //후기 작성 모달
+        $("#reviewbtn").click(function () {
+            $("#writereview").modal("show");
+        });
+
+        var photoCount = 0;
+        var photoArray = new Array();
+
+        function photoFileCheck() {
+            let myInput = document.getElementById("camera");
+            myInput.click();
+        }
+
+        $(function () {
+            $("#camera").change(function (e) {
+                let files = e.target.files;
+                for (let i = 0; i < files.length; i++) {
+                    if (photoArray.length < 4) {
+                        if (!photoArray.includes(files[i])) { // 중복 체크
+                            photoArray.push(files[i]);
+                            photoCount++;
+                            $('#selectImg' + photoCount).attr('src', URL.createObjectURL(files[i]));
+                        }
+                    }
+                }
+                console.log(photoArray);
+            });
+        });
+
+        //리뷰 작성 버튼
+        function postReview() {
+            const f = document.reviewwirte; // form안에 있는 데이터 가져오기
+
+            const title = f.SRTitle.value;
+            const content = f.SRcontent.value;
+            const star = f.SRStar.value;
+            const room = $('select#SGIContent1').val();
+            const memberid = `[[${session.userid}]]`;
+
+            const formData = new FormData();
+            formData.append("SRTitle", title);
+            formData.append("SRcontent", content);
+            formData.append("SRStar", star);
+            formData.append("SGIIdx", room);
+            formData.append("MemberId", memberid);
+            for(let i = 0; i<photoArray.length; i ++) {
+                formData.append("image[]", photoArray[i]);
+            }
+
+            console.log(formData.get("image[]"));
+
+            $.ajax({
+                url: '/postReview',
+                type: 'post',
+                processData: false,
+                contentType:false,
+                data: formData,
+                success: function(result) {
+                    if(result == 1) {
+                        alert('리뷰가 등록되었습니다');
+                        window.location.reload();
+                    }
+                },
+                error: function() {
+                    alert('리뷰 등록 실패');
+                }
+            });
+        }
+
+    </script>
+</th:block>
+</html>
+
+<!--별점 찍기 선택 -->
+<!--<th:block th:each="i : ${#numbers.sequence(1, 5)}">-->
+<!--    <input type="radio" th:id="'rating1_' + ${i}" name="rating1" th:value="${i}">-->
+<!--    <label th:for="'rating1_' + ${i}" th:title="${i} + '점'"></label>-->
+<!--</th:block>-->
+<!--<div id="selectedScore" class="selectedScore">선택된 점수: </div>-->
+
+<!--/*별 모양 추가 */-->
+<!--/*label:before {*/-->
+<!--/*    content: '★︎';*/-->
+<!--/*}*/-->
+<!--/*⭐*/-->
+

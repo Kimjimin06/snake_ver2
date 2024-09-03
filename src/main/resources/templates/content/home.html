@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}"
+>
+<head>
+    <script defer src="/assets/js/Home.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <title>Main</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300&display=swap" rel="stylesheet">
+</head>
+<th:block layout:fragment="content">
+    <!-- ======= Hero Section ======= -->
+    <section id="hero" class="d-flex align-items-center">
+        <div class="container">
+            <h1>어서오세요. JAVA스터디입니다.</h1>
+            <h2>We are team of talented designers making websites with Bootstrap</h2>
+            <a href="/" class="btn-get-started scrollto">Get Started</a>
+        </div>
+    </section><!-- End Hero -->
+
+    <main id="main">
+        <!-- ======= Breadcrumbs Section ======= -->
+        <!-- ======= Why Us Section ======= -->
+        <section id="why-us" class="why-us">
+            <div class="container">
+                <!--
+                  <div class="row">
+                  <div class="col-lg-4 d-flex align-items-stretch">
+                    <div class="content roomPicture">
+                      <h3>Why Choose Medilab?</h3>
+                      <p>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Duis aute irure dolor in reprehenderit
+                        Asperiores dolores sed et. Tenetur quia eos. Autem tempore quibusdam vel necessitatibus optio ad corporis.
+                      </p>
+                      <div class="text-center">
+                        <a href="#" class="more-btn">Learn More <i class="bx bx-chevron-right"></i></a>
+                      </div>
+                    </div>
+                  </div>
+                  -->
+<!-- test-->
+
+
+                <div class="buttonGroup">
+                    <button type="button" class="btn btn-lg btn-outline-secondary seatButton active">개인</button>
+                    <button type="button" class="btn btn-lg btn-outline-secondary roomButton ">스터디룸</button>
+                </div>
+                <div class="col-lg-12 seats">
+                    <div class="seatContainer">
+                        <ul class="showcase">
+                            <li>
+                                <div class="availableSeat"></div>
+                                <small class="small">빈자리</small>
+                            </li>
+                            <li>
+                                <div class="selectedSeatIcon"></div>
+                                <small class="small">사용중인 자리</small>
+                            </li>
+                        </ul>
+                        <div class="seatContainer" th:if="${ViewStudyInInfo != null}">
+                            <div class="row" th:each="studyInInfogroup : ${ViewStudyInInfo}">
+                                <th:block th:each="studyInInfo : ${studyInInfogroup}">
+                                    <th:block th:if="${studyInInfo.SeatUseState} == 'Y'">
+                                        <input type="hidden" th:value="${studyInInfo.seatStartTime}">
+                                        <input type="hidden" th:value="${studyInInfo.seatEndTime}">
+                                        <span class="seat selectedSeat" th:id="'seat' + ${studyInInfo.SIINum}"></span>
+                                    </th:block>
+                                    <th:block th:if="${studyInInfo.SeatUseState} == 'N'">
+                                        <span class="seat" th:id="'seat' + ${studyInInfo.SIINum}" data-bs-toggle="modal" data-bs-target="#exampleModal"></span>
+                                    </th:block>
+                                </th:block>
+                            </div>
+                        </div>
+                        <p class="text">
+                            <i class="bi bi-caret-right-fill"></i> 총 좌석 <span id="totalcount"></span>
+                            <i class="bi bi-caret-right-fill"></i> 사용 중 <span id="usecount"></span>
+                            <i class="bi bi-caret-right-fill"></i> 남은 자리 <span id="leftcount"></span>
+                        </p>
+                    </div>
+                </div>
+                <div class="col-lg-12 align-items-stretch rooms">
+                    <div class="icon-boxes d-flex flex-column justify-content-center">
+                        <div class="row">
+
+                            <div class="col-xl-3 d-flex align-items-stretch" th:each="StudyGInfo : ${ViewStudyGInfo}">
+                                <a th:href="@{teamdetail(SGINum=${StudyGInfo.SGINum})}">
+                                    <div th:id="'roomPicture' + ${StudyGInfo.SGINum}" class="icon-box mt-4 mt-xl-0">
+                                        <!--                      <i class="bx bx-receipt"></i>-->
+                                        <th:block th:each="StudyGImg : ${ViewStudyGImg}">
+                                            <img th:if="${StudyGImg.SGIIdx == StudyGInfo.SGIIdx}" th:src="${StudyGImg.SGImg}" src="" alt="스터드룸 사진">
+                                        </th:block>
+                                        <h4 th:text="${StudyGInfo.SGIContent1}">스터디룸 1번</h4>
+                                        <p th:text="${StudyGInfo.SGIContent2}">스터디룸은 학습이나 작업을 위한 전용 공간으로, 개별이나 그룹으로 사용될 수 있는 공간입니다.
+                                            주로 조용하고 집중하기 좋은 환경을 제공하여 학업이나 업무에 집중할 수 있도록 돕습니다.</p>
+                                        <!--                      <a href="#" type="button" class="btn btn-light">버튼</a>-->
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div><!-- End .content-->
+                </div>
+            </div>
+            </div>
+        </section><!-- End Why Us Section -->
+    </main><!-- End #main -->
+    <!--modal1-->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">알림</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div id="modal-body" class="modal-body" >
+                    <th:block th:if="${session.userid} != null">
+                        <div class="row align-content-center">
+                            <div class="col-4">
+                                <select id="selectStartBox" class="form-select">
+                                    <th:block th:each="num, index : ${#numbers.sequence(9, 23)}">
+                                        <option th:text="${num} + '시'" th:value="${num}" th:selected="${index.index == 0}"></option>
+                                    </th:block>
+                                </select>
+                            </div>
+                            <div class="col pt-1">부터</div>
+                            <div class="col-4">
+                                <select id="selectEndBox" class="form-select">
+                                    <th:block th:each="num, index : ${#numbers.sequence(10, 24)}">
+                                        <option th:text="${num} + '시'" th:value="${num}" th:selected="${index.index == 0}"></option>
+                                    </th:block>
+                                </select>
+                            </div>
+                            <div class="col pt-1">까지</div>
+                        </div>
+                        <div id="SeatChoose"></div>
+                    </th:block>
+                    <th:block th:if="${session.userid} == null">
+                        <div>로그인 후 이용해주세요.</div>
+                    </th:block>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                    <th:block th:if="${session.userid} != null">
+                        <button type="button" id="modalsucbtn" class="btn btn-primary"
+                                data-bs-dismiss="modal" data-bs-target="#exampleModal2">완료</button> <!-- data-bs-target="#exampleModal2"  -->
+                    </th:block>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--modal2
+     data-bs-backdrop="static"
+    -->
+    <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel2">알림</h1>
+<!--                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
+                </div>
+                <div id="modal-body2" class="modal-body" >
+                    내용부분
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="modal2Button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+</html>

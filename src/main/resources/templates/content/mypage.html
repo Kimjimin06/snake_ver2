@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}">
+<head>
+    <title>Info Page</title>
+</head>
+<th:block layout:fragment="content">
+    <div class="container-mypage-detail">
+        <div class="row">
+            <div class="col-4 sub_wrap">
+                <!-- 왼쪽메뉴 -->
+                <div class="lnb_sec line">
+                    <h1>마이페이지</h1>
+                    <ul class="lnbnew">
+                        <li class="mywriteBtn active"><a href="javascript:void(0);" onclick="myWritebtn()">내가 쓴 글</a></li>
+                        <li class="mypageBtn active"><a href="javascript:void(0);" onclick="myUpdatebtn()">개인 정보 수정</a></li>
+                        <li class="mytimeBtn active"><a href="javascript:void(0);" onclick="myAddbtn()">시간 확인 및 충전</a></li>
+                        <li><a href="javascript:void(0);" onclick="delShow()">회원 탈퇴</a></li>
+<!--                            <button type="button" id="deletebtn" class="deletebtn">회원 탈퇴</button>-->
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 개인정보수정 -->
+            <div class="col-8 mypage">
+                <form th:action="@{/MemberUpdate(id=${session.userid})}" method="post" name="checkform" class="sign-form" onsubmit="return validateForm()">
+                    <h1 class="title">개인정보 수정</h1>
+                        <div class="form-group">
+                            <label>아이디</label>
+                            <input type="text" name="memberId" class="form-control" style="width: 500px;" th:value="${session.userid}" disabled>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <label>이름</label>
+                            <input type="text" name="memberName"  class="form-control" style="width: 500px;" th:value="${data.getMemberName()}" >
+                            <div id="nameMsg" class="error-message"></div>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <label>비밀번호 변경</label>
+                            <input type="password" name="memberPw" class="userpw form-control" style="width: 500px;" th:value="${data.getMemberPw()}">
+                            <div id="pwMsg" class="error-message"></div>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <label>비밀번호 확인</label>
+                            <input type="password" name="memberconPw" class="userpw-confirm form-control" style="width: 500px;" th:value="${data.getMemberPw()}">
+                            <div id="pwcheckMsg" class="error-message1"></div>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <label>전화번호</label>
+                            <input type="tel" name="memberPhone" class="phone form-control" style="width: 500px;" maxlength="11"
+                                   th:value="${data.getMemberPhone()}">
+                            <div id="phoneMsg" class="error-message"></div>
+                        </div>
+                        <br>
+                        <div class="form-group1">
+                            <div class="date">
+                                <label>가입일자</label>
+                                <input type="text" class="form-control date" style="width: 300px;"
+                                       th:value="${#dates.format(data.getMregDate(), 'yyyy-MM-dd')}" disabled>
+                            </div>
+                            <div class="gender2">
+                                <label>성별</label>
+                                <input type="text" class="form-control gender" style="width: 197px;"
+                                       th:value="${data.getMemberSex() == 0 ? '남자' : '여자'}" disabled>
+                            </div>
+                        </div>
+                        <br>
+                    <input type="submit" id="update" class="btn-lightblue update" value="수정하기">
+                </form>
+            </div>
+
+            <!-- 잔여시간확인 -->
+            <div class="col-8 mytime">
+                <table class="table-fill">
+                    <thead>
+                    <tr>
+                        <th scope="col">개인 좌석 잔여 시간</th>
+                        <th scope="col">스터디룸 대여 장소</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>
+                            <th:block th:if="${studyInInfo != null}">
+                                당일권 : <th:block th:text="${studyInInfo.museTime}"></th:block> 시간<br>
+                                정기권 : <th:block th:text="${studyInInfo.differnce}"></th:block>
+                            </th:block>
+                            <th:block th:if="${studyInInfo == null}">
+                                당일권 : 없음<br>
+                                정기권 : 없음
+                            </th:block>
+                        </td>
+                        <td>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href ="javascript:chargeshow1()" class="charge">시간 충전하기</a>
+                        </td>
+                        <td>
+                            <a href ="/" class="charge">예약하러 가기</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 작성한 글 확인 -->
+            <div class="col-8 mytest">
+                <th:block th:if="${viewCommunity.size() != 0}">
+                    <div class="row" id="communityContainer">
+                        <th:block th:each="groupCommunity, index : ${viewCommunity}">
+                            <th:block th:if="${index.count} == ${parameterCommnuity}" >
+                                <th:block th:each="community : ${groupCommunity}">
+                                    <div class="col-6 mywrite">
+                                        <div class="writecontent">
+                                            <a th:href="@{post(postNum=${community.comIdx})}">
+                                                <h4 th:text="${community.comTitle}"></h4>
+                                            </a>
+                                            <table class="table">
+                                                <tr>
+                                                    <th>작성자</th>
+                                                    <td th:text="${community.memberVo.memberName}"></td>
+                                                </tr>
+                                                <tr>
+                                                    <th>작성날짜</th>
+                                                    <td th:text="${community.comRegDate}"></td>
+                                                </tr>
+                                                <tr>
+                                                    <th>카테고리</th>
+                                                    <td th:text="${community.communityCategoryVo.comCateName}"></td>
+                                                </tr>
+                                                <tr>
+                                                    <th>조회수</th>
+                                                    <td th:text="${community.comintoDate}"></td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </th:block>
+                            </th:block>
+                        </th:block>
+                    </div>
+                    <div class="btn-section">
+                        <button type="button" class="btn btn-light btn-before" onclick="firstActive()"><i class="bi bi-chevron-double-left"></i></button>
+                        <button type="button" th:if="${parameterPageGroup != 1}" class="btn btn-light btn-before" onclick="beforeActive()"><i class="bi bi-chevron-left"></i></button>
+                        <div class="btn-group" id="btn-group" role="group" aria-label="Second group">
+                            <!--                        <p th:text="${ViewpageTables.size()}"></p>-->
+                            <th:block th:with=" size = ${ViewpageTables[(parameterPageGroup - 1)].size()}">
+                                <th:block th:with=" value = ${parameterPageGroup * 3 - (3 - size)}">
+                                    <th:block th:each="i : ${#numbers.sequence((parameterPageGroup - 1) * 3 + 1, value)}">
+                                        <button type="button" th:classappend="${i == parameterCommunity} ? 'active'" th:text="${i}" class="btn btn-light">1</button>
+                                    </th:block>
+                                </th:block>
+                            </th:block>
+                        </div>
+                        <th:block th:with = "threeList = ${ViewpageTables.size()}">
+                            <th:block th:with = "twoList = ${ViewpageTables[threeList - 1].size()}">
+                                <button type="button" th:if="${parameterPageGroup} != ${threeList}" class="btn btn-light btn-next" onclick="nextActive()"><i class="bi bi-chevron-right"></i></button>
+                                <button type="button" class="btn btn-light btn-next" th:onclick="'lastActive(' + ${threeList} + ', ' + ${twoList} + ')'"><i class="bi bi-chevron-double-right"></i></button>
+                            </th:block>
+                        </th:block>
+                    </div>
+                </th:block>
+                <th:block th:if="${viewCommunity.size() == 0}">
+                    <div class="row" id="item1">
+                        <div class="col-12 mywrite">
+                            <div class="text-center">
+                                <h1>작성하신 글이 없습니다</h1>
+                            </div>
+                        </div>
+                    </div>
+                </th:block>
+            </div>
+        </div>
+    </div>
+
+    <!-- 회원탈퇴 modal -->
+    <div class="modal fade" id="modaldel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="exampleModalLabel">회원 탈퇴</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <b>
+                        JAVA 스터디에서 "<th:block th:text="${session.username}"></th:block>" 님의 계정이 완전히 삭제합니다.<br>
+                        탈퇴 시 개인정보및 이용정보가 모두 삭제되며 복구할 수 없습니다.<br>
+                        본인의 비밀번호를 입력 한 후 동의함 버튼을 체크해주세요.
+                    </b>
+                    <br>
+                    <br>
+                    <div class="chkpass">
+                        <b>비밀번호 확인</b>
+                        <input type="password" class="passwrd" id="passwrd" name="delpw">
+                        <div id="checkMsg" class="error-message"></div>
+                    </div>
+                    <small>본인인증을 위해 비밀번호를 입력하세요.</small>
+                    <br>
+                    <div class="chkk">
+                        <b>동의함</b>
+                        <input type="checkbox" id="check" class="check">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" value="회원 탈퇴하기" id="delbtn" class="btn btn-warning" onclick="delbtn()">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 개인 시간 충전 modal -->
+    <div class="modal fade" id="modalcharge1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">개인 시간 충전</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <span>1. 당일 / 정기 이용권을 선택해주세요.</span><br>
+                    <span>2. 이용권 선택 후 충전하기 버튼을 눌러 결제를 진행해주세요.</span><br>
+                    <span>3. 충전이 완료 되면 좌석 선택을 하여 예약을 진행해주세요.</span><br>
+                    <select class="form-select" id="select-box">
+                        <th:block th:each="list : ${selectPareInfo}">
+                            <option th:id="${list.getSCIdx()}" th:value="${list.getSIPName2()}" th:text="${list.getSIPName()} + ' / ' + ${list.getSIPPrice()} + '원'"></option>
+                        </th:block>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" value="충전하기" class="btn btn-primary" onclick="insertBtn()">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+    <script>
+        const mypageBtn = document.querySelector(".mypageBtn");
+        const mytimeBtn = document.querySelector(".mytimeBtn");
+        const mywriteBtn = document.querySelector(".mywriteBtn");
+
+        const buttonEls = document.querySelectorAll('#btn-group .btn');
+
+        const mypage = document.querySelector(".mypage");
+        const mytime = document.querySelector(".mytime");
+        const mytest = document.querySelector(".mytest");
+
+        function myUpdatebtn() {
+            mytimeBtn.classList.remove('active')
+            mywriteBtn.classList.remove('active')
+            mypageBtn.classList.add('active')
+
+            mypage.style.display = "block";
+            mytime.style.display = "none";
+            mytest.style.display = "none";
+        }
+
+        function myAddbtn() {
+            mypageBtn.classList.remove('active')
+            mywriteBtn.classList.remove('active')
+            mytimeBtn.classList.add('active')
+
+            mytime.style.display = "block";
+            mypage.style.display = "none";
+            mytest.style.display = "none";
+        }
+
+        function myWritebtn() {
+            mypageBtn.classList.remove('active')
+            mytimeBtn.classList.remove('active')
+            mywriteBtn.classList.add('active')
+
+            mytest.style.display = "block";
+            mypage.style.display = "none";
+            mytime.style.display = "none";
+        }
+
+        // 개인 시간 충전
+        function insertBtn() {
+            const value = $('select#select-box').val();
+            console.log(value);
+            $.ajax({
+                url : '/inupdate',
+                data : {
+                    siptime : value,
+                    MemberId : `[[${session.userid}]]`
+                },
+                type: 'POST',
+                dataType: 'json',
+                success : function(data) {
+                    if(data == true) {
+                        alert("시간이 충전되었습니다.");
+                        window.location.href = `/mypage?id=[[${session.userid}]]&pageGroup=1&groupCommunity=1`;
+                    } else {
+                        alert("실패");
+                    }
+                }, error: function(error) {
+                    console.log(error);
+                }
+            })
+        }
+
+        // 회원탈퇴 모달
+        function delShow() {
+            $("#modaldel").modal("show");
+        }
+
+        function delbtn(){
+            // 회원 탈퇴 버튼 클릭시 비밀번호가 맞는지 확인 후 최종적으로 탈퇴하는 방향으로 해야함.
+            // controller 부분 내일 작성
+            // 체크 여부
+            const check = document.getElementById('check');
+
+            const password = $('input[name=delpw]').val();
+            console.log(password);
+            // var password = document.getElementById('passwrd').value;
+            const checkMsg = document.getElementById('checkMsg');
+
+            if(check.checked === true) {
+                $.ajax({
+                    url:'/PassWordCheck',
+                    data : {
+                        MemberId : `[[${session.userid}]]`,
+                        MemberPw : password
+                    },
+                    type: 'POST',
+                    dataType: 'json',
+                    success: function(result) {
+                        console.log(result);
+                        if(result == true) {
+                            checkMsg.textContent = "비밀번호가 일치합니다.";
+                            deleteFunction();
+                        } else {
+                            checkMsg.textContent = "비밀번호가 일치하지 않습니다.";
+                            return false;
+                        }
+                    }, error: function(error) {
+                        console.log(error);
+                    }
+                });
+            } else {
+                alert("동의를 체크해주세요.");
+            }
+        }
+
+        function deleteFunction() {
+            $.ajax({
+                url:'/deleteMember',
+                data : {
+                    MemberId: `[[${session.userid}]]`
+                },
+                type: 'POST',
+                dataType : 'json',
+                success: function(result) {
+                    if(result == true) {
+                        alert("회원이 정상적으로 탈퇴하였습니다. 감사합니다.");
+                        window.location.href = "/";
+                    }
+                }, error: function(error) {
+                    console.log(error);
+                }
+            })
+
+
+        }
+
+        // 회원탈퇴 모달
+        function chargeshow1() {
+            $("#modalcharge1").modal("show");
+        }
+
+        $(document).ready(function() {
+            mytime.style.display = "none";
+            mypage.style.display = "none";
+        })
+
+        buttonEls.forEach(function(buttonEl) {
+            buttonEl.addEventListener('click', function() {
+                // const activeEl = document.querySelector('#btn-group .btn.active')
+                if(buttonEl)  {
+                    const urlParams = new URL(location.href).searchParams;
+                    window.location.href = `/mypage?id=[[${session.userid}]]&pageGroup=${urlParams.get("pageGroup")}&groupCommunity=${buttonEl.innerText}`;
+                    // const urlParams = new URL(location.href).searchParams;
+                    // const url = `/mypage?id=[[${session.userid}]]&pageGroup=${urlParams.get("pageGroup")}&groupCommunity=${buttonEl.innerText}`;
+                    // history.pushState(null, '', url);
+                    mytest.style.display = "block";
+                    mypage.style.display = "none";
+                    mytime.style.display = "none";
+
+                }else {
+                    // buttonEl.classList.add('active')
+                    // console.log(buttonEl.innerText)
+                    window.alert("다시시도해주세요");
+                }
+            })
+        })
+
+        // $(document).ready(function () {
+        //     mytime.style.display = "none";
+        //     mytest.style.display = "none";
+        //
+        //     mypageBtn.addEventListener('click', function () {
+        //
+        //         mytimeBtn.classList.remove('active')
+        //         mywriteBtn.classList.remove('active')
+        //         mypageBtn.classList.add('active')
+        //
+        //         mypage.style.display = "block";
+        //         mytime.style.display = "none";
+        //         mytest.style.display = "none";
+        //
+        //     })
+        //
+        //     mytimeBtn.addEventListener('click', function () {
+        //
+        //         mypageBtn.classList.remove('active')
+        //         mywriteBtn.classList.remove('active')
+        //         mytimeBtn.classList.add('active')
+        //
+        //         mytime.style.display = "block";
+        //         mypage.style.display = "none";
+        //         mytest.style.display = "none";
+        //     })
+        //
+        //
+        //     mywriteBtn.addEventListener('click', function () {
+        //         // const urlParams = new URL(location.href).searchParams;
+        //
+        //         mypageBtn.classList.remove('active')
+        //         mytimeBtn.classList.remove('active')
+        //         mywriteBtn.classList.add('active')
+        //
+        //         mytest.style.display = "block";
+        //         mypage.style.display = "none";
+        //         mytime.style.display = "none";
+        //     })
+        // })
+
+                // const url = '/mypage?id=[[${session.userid}]]&pageGroup=1&groupCommunity=1';
+                // history.pushState(null, '', url);
+                // let pageGroup = 1;
+                //
+                // let groupCommunity = 1;
+                //
+                // function fetchCommunities(pageGroup) {
+                //     $.ajax({
+                //         url: '/ShowContent',
+                //         method: 'GET',
+                //         data : {
+                //             id:'[[${session.userid}]]'
+                //         },
+                //         success: function(result) {
+                //             console.log(result);
+                //             displayCommunities(result, pageGroup);
+                //         },
+                //         error: function(error) {
+                //             console.error('Error fetching community data', error);
+                //         }
+                //     });
+                // }
+                //
+                // function displayCommunities(data, pageGroup) {
+                //     let communityContainer = $('#communityContainer');
+                //     communityContainer.empty();
+                //
+                //     let pageData = data[pageGroup - 1];
+                //     console.log(pageData);
+                //     let communityHtml = ``;
+                //
+                //     data.forEach(list => { // 2차원
+                //         for (let i = 0; i < Math.min(list.length, 3); i++) {
+                //             let item = list[i];
+                //             console.log(item);
+                //         // list.forEach(item => { // 1차원
+                //             // console.log("item", item.comTitle);
+                //             communityHtml = `
+                //                     <div class="col-6 mywrite">
+                //                         <div class="writecontent">
+                //                             <a href="/">
+                //                                 <h4>${item.comTitle}</h4>
+                //                             </a>
+                //                             <table class="table">
+                //                                 <tr>
+                //                                     <th>작성자</th>
+                //                                     <td>${item.memberVo.memberName}</td>
+                //                                 </tr>
+                //                                 <tr>
+                //                                     <th>작성날짜</th>
+                //                                     <td>${item.comRegDate}</td>
+                //                                 </tr>
+                //                                 <tr>
+                //                                     <th>카테고리</th>
+                //                                     <td>${item.communityCategoryVo.comCateName}</td>
+                //                                 </tr>
+                //                                 <tr>
+                //                                     <th>조회수</th>
+                //                                     <td>${item.comintoDate}</td>
+                //                                 </tr>
+                //                             </table>
+                //                         </div>
+                //                     </div>`;
+                //             communityContainer.append(communityHtml);
+                //         };
+                //
+                //     });
+                //
+                //     // 페이지 버튼 생성
+                //     let btnGroup = $('#btn-group');
+                //     btnGroup.empty();
+                //     for (let i = 1; i <= data.length; i++) {
+                //         let buttonHtml = `<button type="button" class="btn btn-light ${i === pageGroup ? 'active' : ''}" onclick="fetchCommunities(${i})">${i}</button>`;
+                //         btnGroup.append(buttonHtml);
+                //     }
+                // }
+                // // 초기 데이터 로드
+                // fetchCommunities(pageGroup);
+
+        //동의함 체크
+        // const delbtn = document.getElementById('delbtn');
+        // const checkboxes = document.querySelectorAll('.check');
+        //
+        // delbtn.addEventListener('click', function (event) {
+        //     event.preventDefault();
+        //
+        //     let agreeChecked = true;
+        //
+        //     checkboxes.forEach(function (checkbox) {
+        //         if (!checkbox.checked) {
+        //             agreeChecked = false;
+        //         }
+        //     });
+        //
+        //     if (agreeChecked) {
+        //         location.href = '/';
+        //     } else {
+        //         alert('동의함을 체크해주세요.');
+        //     }
+        // });
+
+        function validateForm() {
+            const f = document.checkform;
+
+            const pwMsg = document.getElementById("pwMsg");
+            const pwcheckMsg = document.getElementById("pwcheckMsg");
+            const nameMsg = document.getElementById("nameMsg");
+            const phoneMsg = document.getElementById("phoneMsg");
+
+            if (f.memberName.value == "") {
+                nameMsg.textContent = "이름은 필수 입력 사항입니다.";
+                f.memberName.focus();
+                return false;
+            } else {
+                nameMsg.style.display = "none";
+            }
+
+            if (f.memberPw.value == "") {
+                pwMsg.textContent = "비밀번호는 필수 입력 사항입니다.";
+                f.memberPw.focus();
+                pwcheckMsg.textContent = "";
+                return false;
+            } else if (f.memberPw.value != f.memberconPw.value) {
+                pwcheckMsg.textContent = "비밀번호가 일치하지 않습니다.";
+                f.memberconPw.focus();
+                pwMsg.textContent = "";
+                return false;
+            } else {
+                pwMsg.textContent = "";
+                pwcheckMsg.textContent = "";
+            }
+
+            if (f.memberPhone.value == "") {
+                phoneMsg.textContent = "전화번호는 필수 입력 사항입니다.";
+                f.memberPhone.focus();
+                return false;
+            } else {
+                phoneMsg.style.display = "none";
+            }
+        }
+
+        function checkPassword() {
+            var password = document.querySelector('.userpw').value;
+            var confirmPassword = document.querySelector('.userpw-confirm').value;
+            var errorMessage = document.querySelector('.error-message1');
+
+            if (password !== confirmPassword) {
+                errorMessage.textContent = "비밀번호가 일치하지 않습니다.";
+                document.querySelector('.userpw').focus();
+            } else {
+                // 비밀번호가 일치하면 오류 메시지를 지움
+                errorMessage.textContent = "";
+            }
+        }
+
+        // 비밀번호 확인 함수를 비밀번호 재확인 입력란의 이벤트에 연결
+        document.querySelector('.userpw-confirm').addEventListener('blur', checkPassword);
+
+        function beforeActive() {
+            const urlParams = new URL(location.href).searchParams;
+            window.location.href = `/mypage?id=[[${session.userid}]]&pageGroup=${Number(urlParams.get("pageGroup")) - 1}&groupCommunity=${(Number(urlParams.get("pageGroup")) * 3) - 3}`;
+            // console.log(activeButton.innerText - 1)
+            mytest.style.display = "block";
+            mypage.style.display = "none";
+            mytime.style.display = "none";
+        }
+
+        function nextActive() {
+            // 현재 url의 pageGroup의 값을 가져와서 1이 아니면 그 값에 1을 추가한다. (일단 groupCommunity는 그냥 냅둔다.)
+            const urlParams = new URL(location.href).searchParams;
+            // console.log(urlParams.get("pageGroup") != 1)
+            window.location.href = `/mypage?id=[[${session.userid}]]&pageGroup=${Number(urlParams.get("pageGroup")) + 1}&groupCommunity=${(Number(urlParams.get("pageGroup")) * 3) + 1}`;
+
+            mytest.style.display = "block";
+            mypage.style.display = "none";
+            mytime.style.display = "none";
+        }
+
+        function firstActive() {
+            const urlParams = new URL(location.href).searchParams;
+            window.location.href = `/mypage?id=[[${session.userid}]]&pageGroup=1&groupCommunity=1`;
+
+            mytest.style.display = "block";
+            mypage.style.display = "none";
+            mytime.style.display = "none";
+        }
+
+        function lastActive(threeList, twoList) {
+            //3차원 배열(ViewpageTables)의 사이즈를 구하고 가장큰값에 해당하는 값을 pageGroup에 넣고 groupCommunity은
+            // pageGroup에에 해당하는 3차원배열안에 들어있는 2차원 배열의 사이즈에서 가장큰값으로 설정해준다.
+            // console.log(threeList, twoList)
+            const urlParams = new URL(location.href).searchParams;
+            window.location.href = `/mypage?id=[[${session.userid}]]&pageGroup=${threeList}&groupCommunity=${twoList + ((threeList - 1) * 3)}`;
+
+            mytest.style.display = "block";
+            mypage.style.display = "none";
+            mytime.style.display = "none";
+        }
+    </script>
+
+</th:block>
+</html>
+
