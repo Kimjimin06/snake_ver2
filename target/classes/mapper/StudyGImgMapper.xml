@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.project.SnakeProject.mapper.StudyGImgMapper">
+    <select id="ViewStudyGImg" resultType="com.project.SnakeProject.vo.StudyGImgVo">
+        select rs.SGImgIdx, rs.SGIIdx, rs.SGImg
+        from (select a.*,
+                     row_number() over (partition by SGIIdx order by SGImg)as rn
+              from Tbl_StudyGImg a) rs
+        where rn = 1
+    </select>
+</mapper>

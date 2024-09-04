@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.project.SnakeProject.mapper.ReviewMapper">
+    <resultMap id="StudyGInfoVo" type="StudyGInfoVo">
+        <constructor>
+            <arg column="SGINum" javaType="java.lang.Integer" />
+            <arg column="SGIContent1" javaType="java.lang.String" />
+        </constructor>
+    </resultMap>
+    <resultMap id="StudyReviewImgVo" type="StudyReviewImgVo">
+        <constructor>
+            <arg column="SRIImgSrc" javaType="java.lang.String" />
+            <arg column="SRIImgName" javaType="java.lang.String" />
+        </constructor>
+    </resultMap>
+    <resultMap id="StudyGImgVo" type="StudyGImgVo">
+        <constructor>
+            <arg column="SGImg" javaType="java.lang.String" />
+        </constructor>
+    </resultMap>
+    <resultMap id="MemberVo" type="MemberVo">
+        <constructor>
+            <arg column="MemberName" javaType="java.lang.String" />
+        </constructor>
+    </resultMap>
+
+    <resultMap id="StudyReviewVo" type="StudyReviewVo">
+        <result  column="SRIdx" property="SRIdx" />
+        <result column="SRStar" property="SRStar" />
+        <result column="SRTitle" property="SRTitle" />
+        <result column="SRcontent" property="SRcontent" />
+        <result column="SRRegDate" property="SRRegDate" />
+        <collection property="studyGInfoVo" resultMap="StudyGInfoVo" />
+        <collection property="studyReviewImgVo" resultMap="StudyReviewImgVo" />
+        <collection property="studyGImgVo" resultMap="StudyGImgVo" />
+        <collection property="memberVo" resultMap="MemberVo" />
+    </resultMap>
+
+    <select id="reviewall" resultMap="StudyReviewVo">
+        SELECT tsr.SRIdx,
+               tm.MemberName,
+               tsr.SRcontent,
+               tsr.SRStar,
+               tsr.SRTitle,
+               tsgi.SGINum,
+               tsgi.SGIContent1,
+               to_char(tsr.SRRegDate, 'YYYY-MM-DD HH24:MI:SS') as SRRegDate,
+               tsri.SRIImgSrc,
+               tsri.SRIImgName,
+               tsgimg.SGImg
+        FROM Tbl_StudyReview tsr
+                 left join tbl_studyginfo tsgi on tsr.sgiidx = tsgi.sgiidx
+                 left join tbl_member tm on tsr.midx = tm.midx
+                 left join (SELECT sridx, sriimgsrc, sriimgname
+                                FROM (SELECT sridx, sriimgsrc,  sriimgname,
+                                                ROW_NUMBER() OVER (PARTITION BY sridx ORDER BY sridx desc) as rn
+                                         FROM tbl_studyreviewimg
+                                     ) tsri_sub
+                                WHERE rn = 1
+        ) tsri ON tsr.sridx = tsri.sridx
+                 left join (select sgiidx, sgimg
+                    from (select sgiidx, sgimg,
+                                    ROW_NUMBER() OVER (PARTITION BY sgiidx ORDER BY sgiidx desc) as rn
+                             from tbl_studygimg
+                         ) tsgimg_sub
+                    where rn = 1
+        ) tsgimg on tsr.sgiidx = tsgimg.sgiidx
+        order by tsr.SRIdx desc
+    </select>
+
+    <select id="contentall" resultType="com.project.SnakeProject.vo.StudyGInfoVo">
+        select SGINum, SGIContent1 from tbl_studyginfo
+    </select>
+
+    <insert id="addReview" parameterType="com.project.SnakeProject.vo.StudyReviewVo">
+        Insert INTO Tbl_StudyReview
+        (
+            SRIdx, SGIIdx, MIdx, SRTitle, SRcontent, SRStar
+        )
+        VALUES
+            (
+                SREVIEW_SEQ.nextval,
+                #{SGIIdx},
+                (select midx from tbl_member where memberId = #{memberId}),
+                #{SRTitle},
+                #{SRcontent},
+                #{SRStar}
+--                 to_date(sysdate, 'YYYY-MM-DD HH24:Mi:ss')
+            )
+    </insert>
+<!--    <select id="selectReviewIdx" resultType="String">-->
+<!--        select * from (select sridx from tbl_studyreview order by sridx desc) where rownum <= 1-->
+<!--    </select>-->
+    <insert id="addReviewImg" parameterType="map">
+        <![CDATA[
+            insert into Tbl_StudyReviewImg
+            (
+                SRIImgIdx, SRIdx, SRIImgSrc, SRIImgName
+            ) values (
+                 SRIImg_seq.nextval,
+                 (select * from (select sridx from tbl_studyreview order by sridx desc) where rownum <= 1),
+                 #{SRIImgSrc},
+                 #{SRIImgName}
+             )
+        ]]>
+    </insert>
+
+    <select id="reviewDetail" parameterType="map" resultMap="StudyReviewVo">
+        SELECT tsr.SRIdx,
+               tm.MemberName,
+               tsr.SRcontent,
+               tsr.SRStar,
+               tsr.SRTitle,
+               tsgi.SGINum,
+               tsgi.SGIContent1,
+               to_char(tsr.SRRegDate, 'YYYY-MM-DD HH24:MI:SS') as SRRegDate,
+               max (tsri.SRIImgSrc) as SRIImgSrc,
+               LISTAGG(distinct tsri.SRIImgName, ',') WITHIN GROUP (ORDER BY tsri.sriimgidx, tsri.sriimgname desc) AS SRIImgName,
+               tsgimg.SGImg
+        FROM Tbl_StudyReview tsr
+            left join tbl_studyginfo tsgi on tsr.sgiidx = tsgi.sgiidx
+            left join tbl_member tm on tsr.midx = tm.midx
+            left join tbl_studyreviewimg tsri on tsr.sridx = tsri.sridx
+            left join (
+                select sgiidx, sgimg
+                from (
+                select sgiidx, sgimg,
+                        ROW_NUMBER() OVER (PARTITION BY sgiidx ORDER BY sgiidx desc) as rn
+                from tbl_studygimg
+                    ) tsgimg_sub
+                where rn = 1
+                    ) tsgimg on tsr.sgiidx = tsgimg.sgiidx
+        where tsr.sridx = #{SRIdx}
+        group by
+            tsr.sridx, tm.membername, tsr.srcontent, tsr.srstar, tsr.srtitle, tsgi.sginum, tsgi.sgicontent1, tsr.srregdate, tsgimg.sgimg
+    </select>
+</mapper>

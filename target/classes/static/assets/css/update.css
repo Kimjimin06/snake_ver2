@@ -1,0 +1,275 @@
+.container-mypage-detail {
+    max-width: 1300px;
+    margin: 130px auto 30px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.btn-lightblue {
+    display: block;
+    font-size: 15px;
+    position: relative;
+    float: right;
+    width: 90px;
+    height: 50px;
+    padding: 0;
+    margin-right: 32%;
+    /*margin: 10px 20px 10px 0;*/
+    font-weight: 600;
+    text-align: center;
+    color: #FFF;
+    border-radius: 2em;
+    transition: all 0.2s ;
+    background: #5DC8CD;
+}
+.btn-lightblue:hover {
+    background: #01939A;
+}
+.title {
+    font-size: 35px;
+    font-weight: bold;
+}
+.mypage {
+    display: inline-block;
+}
+
+.sign-form {
+    margin-left: 80px;
+}
+
+a {
+    color: black;
+    text-decoration: none;
+}
+
+.deletebtn {
+    background: inherit ; border:none; box-shadow:none; border-radius:0; padding:0; overflow:visible; cursor:pointer
+}
+
+.lnbnew > li:hover {
+    background-color: lightgray;
+}
+
+.lnb_sec{
+    width: 70%;
+    margin-top: 0px;
+    float: left;
+    margin-right: 15px;
+    text-align: center;
+    flex-direction: column;
+    top: 130px;
+    position: sticky;
+}
+
+.lnb_sec h1 {
+    color: #333;
+    padding-bottom: 1px;
+    font-size: 25px;
+    font-weight: 500;
+    text-align: center;
+    margin-bottom: 0px;
+    border-bottom-color: rgb(51, 51, 51);
+    border-bottom-width: 0px;
+    border-bottom-style: solid;
+    letter-spacing: -1px;
+    background: lightblue;
+    height: 70px;
+    padding-top: 20px;
+}
+
+.lnb_sec .lnbnew {
+    border-top-color: rgb(219, 219, 219);
+    border-top-width: 1px;
+    border-top-style: solid;
+    margin-top: 20px;
+    padding-top: 20px;
+    /*overflow: auto;*/
+}
+
+.lnbnew {
+    overflow: auto;
+    list-style: none;
+    padding-left: 0px;
+}
+
+.lnb_sec .lnbnew >  li {
+    border-bottom: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    width: 100%;
+    height: 30px;
+    margin-bottom: 10px;
+}
+
+li {
+    list-style: none;
+    color: black;
+    font-family: 'LotteMartDream', 'Noto Sans KR', sans-serif, "Malgun Gothic", "맑은 고딕", "돋움", Dotum, "굴림", Gulim, Tahoma, Verdana, Geneva, sans-serif, Apple Gothic, AppleGothic;
+}
+
+.mytime {
+    display: inline-block;
+
+}
+
+.table-fill {
+    background: white;
+    border-radius:3px;
+    border-collapse: collapse;
+    height: 400px;
+    margin-left: 100px;
+    max-width: 600px;
+    padding:5px;
+    display: inline-block;
+    width: 80%;
+}
+
+.mytime .table-fill > thead > tr > th {
+    color:#333;
+    background:#aad8e6;
+    border-bottom:4px solid #9ea7af;
+    border-right: 1px solid #9ea7af;
+    border-left: 1px solid #9ea7af;
+    border-top: 1px solid #9ea7af;
+    font-weight: bolder;
+    font-size:23px;
+    padding:24px;
+    text-align:left;
+    vertical-align:middle;
+    font-family: "Raleway", sans-serif;
+}
+
+.mytime .table-fill > tbody > tr {
+    border-top: 1px solid #C1C3D1;
+    border-bottom: 1px solid #C1C3D1;
+    color:#666B85;
+    font-size:16px;
+    font-weight:normal;
+    text-shadow: 0 1px 1px rgba(256, 256, 256, 0.1);
+}
+
+.mytime .table-fill > tbody > tr >td {
+    color: #333;
+    background:#FFFFFF;
+    padding:20px;
+    text-align:center;
+    vertical-align:middle;
+    font-weight:300;
+    font-size:18px;
+    text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.1);
+    border-right: 1px solid #C1C3D1;
+    border-left: 1px solid #C1C3D1;
+}
+
+.charge {
+    background-color: #7fccdd;
+    padding: 8px 18px;
+    font-size: 14px;
+    text-decoration: none;
+    color: black;
+    display: inline-block;
+    border: 1px solid rgba(0, 0, 0, 0.21);
+    border-bottom-color: rgba(0, 0, 0, 0.34);
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.15);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.34) inset, 0 2px 0 -1px rgba(0, 0, 0, 0.13), 0 3px 0 -1px rgba(0, 0, 0, 0.08), 0 3px 13px -1px rgba(0, 0, 0, 0.21);
+}
+
+.date {
+    flex: 5;
+}
+
+.gender2 {
+    flex: 7;
+
+}
+
+.form-group1 {
+    display: flex;
+
+}
+
+.check {
+    margin-left: 5px;
+}
+
+
+.chkpass > input {
+    text-align: left;
+    width:225px;
+    height:30px;
+    border: none;
+    border-bottom: solid 2px black;
+    outline: none;
+}
+
+.chkk{
+    float: right;
+    display: flex;
+}
+
+.modal-header {
+    border-bottom: 1px solid white;
+}
+
+.modal-footer {
+    border-top: 1px solid white;
+    display: flex;
+}
+
+.delbtn {
+
+    flex: 5;
+}
+
+.backbtn {
+    /*margin-right: 50%;*/
+    flex: 5;
+}
+
+.close {
+    border: 1px solid white;
+    background: white;
+}
+
+.close > span {
+    font-size: 25px;
+}
+
+.mywrite {
+    display: inline-block;
+    /*text-align: center;*/
+}
+
+.writecontent > a > h4 {
+    border-bottom: 1px solid lightgray;
+    padding: 10px;
+    /*margin-left: 45px;*/
+    text-align: center;
+}
+
+.write1 {
+    margin-left: 10px;
+}
+
+/*.writecontent > a > h4 {*/
+
+/*}*/
+
+.writecontent {
+    height: 300px;
+    /*margin-right: 50px;*/
+}
+
+span.acitve {
+    color: orange;
+}
+
+.btn-section {
+    text-align: center;
+}
+
+
