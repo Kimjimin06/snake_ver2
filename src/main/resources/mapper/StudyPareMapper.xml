@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.project.SnakeProject.mapper.StudyPareMapper">
+    <select id="typeList" resultType="com.project.SnakeProject.vo.StudyInPareVo">
+        select distinct CONCAT(
+                                REPLACE(
+                                        REPLACE(
+                                                REGEXP_SUBSTR(sipname, '\(.+\)'), '('), '권)'), ' 이용권') as sipname
+        from tbl_studyinpare
+    </select>
+
+    <select id="selectList1" resultType="com.project.SnakeProject.vo.StudyInPareVo">
+        select
+            REGEXP_REPLACE(sipname, '\(.+\)') as sipname1, sipprice
+        from tbl_studyinpare where sipname like '%당일%'
+    </select>
+    <select id="selectList2" resultType="com.project.SnakeProject.vo.StudyInPareVo">
+        select
+            REGEXP_REPLACE(sipname, '\(.+\)') as sipname1, sipprice
+        from tbl_studyinpare where sipname like '%정기%'
+    </select>
+    <select id="selectList3" resultType="com.project.SnakeProject.vo.StudyGPareVo">
+        select
+            tsgp.SGPName as sgpname,
+            tsgp.SGPPrice as sgpprice,
+            tsgi.SGIContent1 as SGIContent
+        from tbl_studygpare tsgp
+            left outer join tbl_studyginfo tsgi on tsgi.sgiidx = tsgp.sgiidx
+    </select>
+</mapper>

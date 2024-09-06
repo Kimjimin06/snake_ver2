@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}"
+>
+<head>
+    <title>Space Reservation</title>
+</head>
+<th:block layout:fragment="content">
+    <div class="container-detail">
+        <div class="h_area">
+            <h1 class="h_title" th:text="${studyGInfoVo.SGIContent1} + ${studyGInfoVo.SGINum} + '번 룸' ">스터디룸 제1번 룸</h1>
+            <p class="h_desc">🎈 제목 소개 한줄
+
+            </p>
+            <div class="tags">
+                <div class="tag">#안양역</div>
+                <div class="tag">#모임공간</div>
+                <!-- 추가적인 태그들을 여기에 추가 -->
+            </div>
+        </div>
+        <div class="inner_width">
+            <div class="left_area">
+                <!-- 이미지 슬라이드 -->
+                <div class="slider__wrap">
+                    <div class="slider__img">
+                        <div class="slider__inner">
+                            <th:block th:each="list : ${studyGImg}">
+                                <div class="slider s1"><img th:src="${list}" alt="Random Image"></div>
+                            </th:block>
+                        </div>
+                        <div class="slider__btn">
+                            <a class="prev" title="이전이미지">prev</a>
+                            <a class="next" title="다음이미지">next</a>
+                        </div>
+                        <div class="slider__dot"></div>
+                    </div>
+                </div><!-- 이미지 슬라이드 -->
+                <div class="article">
+                    <div class="space_intro section1">
+                        <h2 id="one" class="two_title">🎈공간 소개</h2>
+                        <th:block th:each="info : ${info.Infomation}">
+                            <p th:text="${info.id} + '. ' + ${info.content}"></p>
+                        </th:block>
+                        <br>
+                    </div>
+                    <div class="space_intro section2">
+                        <h2 id="two" class="two_title">🎈시설안내</h2>
+                        <th:block th:each="Facil : ${info.FacilityInfo}">
+                            <p th:text="${Facil.id} + '. ' + ${Facil.content}"></p>
+                        </th:block>
+                        <br>
+                    </div>
+                    <div class="space_intro section3">
+                        <h2 id="three" class="two_title">🎈유의사항</h2>
+                        <th:block th:each="Order : ${info.Orderinfo}">
+                            <p th:text="${Order.id} + '. ' + ${Order.content}"></p>
+                        </th:block>
+                        <br>
+                    </div>
+<!--                    <div class="space_intro section4">-->
+<!--                        <h2 id="four" class="two_title">환불정책</h2>-->
+<!--                        <p>스터디룸제이는 서울대입구역 근처에 위치한 스터디룸으로, 다양한 모임에 적합한 공간입니다. 청결하고 아늑한 분위기에서 모임을 즐기실 수 있습니다.</p>-->
+<!--                        <p class="h_desc">🎈센츄리타워 10층 1003호에 위치한 스터디룸제이는<br>모든 모임에 알맞는 공간으로 항상 청결하고 아늑하게 준비된 공간 입니다~-->
+<!--                        </p>-->
+<!--                    </div>-->
+<!--                    <div class="space_intro section5">-->
+<!--                        <h2 id="five" class="two_title">Q&A</h2>-->
+<!--                        <p>스터디룸제이는 서울대입구역 근처에 위치한 스터디룸으로, 다양한 모임에 적합한 공간입니다. 청결하고 아늑한 분위기에서 모임을 즐기실 수 있습니다.</p>-->
+<!--                        <p class="h_desc">🎈센츄리타워 10층 1003호에 위치한 스터디룸제이는<br>모든 모임에 알맞는 공간으로 항상 청결하고 아늑하게 준비된 공간 입니다~-->
+<!--                        </p>-->
+<!--                    </div>-->
+
+
+<!--                    리뷰 페이지 작성 후 디자인 예정-->
+<!--                    <div class="space_intro section6">-->
+<!--                        <h2 id="six" class="two_title">🎈이용후기</h2>-->
+<!--                        <p>스터디룸제이는 서울대입구역 근처에 위치한 스터디룸으로, 다양한 모임에 적합한 공간입니다. 청결하고 아늑한 분위기에서 모임을 즐기실 수 있습니다.</p>-->
+<!--                        <p class="h_desc">🎈센츄리타워 10층 1003호에 위치한 스터디룸제이는<br>모든 모임에 알맞는 공간으로 항상 청결하고 아늑하게 준비된 공간 입니다~-->
+<!--                        </p>-->
+<!--                    </div>-->
+
+                </div>
+
+                <!-- 예약 버튼은 아래로 이동 -->
+            </div>
+            <div class="side_container">
+                <div class="payment_info">
+                    <h2 class="payment_title">🎈결제 안내 (1인 시간당 가격)</h2>
+                    <div class="payment_option">
+                        <input type="radio" id="price1" name="price" th:value="${studyGInfoVo.studyGPareVo.SGPPrice}">
+                        <label for="price1" th:text="${studyGInfoVo.studyGPareVo.SGPPrice} + '원'">1000원</label><br>
+                    </div>
+<!--                    <div class="payment_option">-->
+<!--                        <input type="radio" id="price2" name="price" value="2000">-->
+<!--                        <label for="price2">2000원</label><br>-->
+<!--                    </div>-->
+                </div>
+                <!---->
+                <div class="space_info_wrap active">
+                    <div class="meetspace-info">
+                        <div class="meetspace-info-photo">
+                            <img th:src="${studyGImg[0]}" alt="Random Image">
+                            <!--                            <em class="rooms meetspace-info-photo__count">+6</em>-->
+                        </div>
+                        <p class="meetspace-info-desc">
+                            카카오채널 "공튜디오" 검색 후 문의 주시면 빠르게 답변 도와드릴게요!<br>
+                            <br>
+                            •12인용 책상+의자<br>
+                            •TV,빔프로젝트,화이트보드,조명,삼각대,블루투스스피커<br>
+                            •파티빔+파티용품 무료사용<br>
+                            •정수기,싱크대,커피,티,간식 제공<br>
+                            •고속 와이파이<br>
+                            •내부 화장실
+                        </p>
+                    </div>
+                    <ul class="list_detail">
+                        <li>
+                            <span class="tit">공간유형</span>
+                            <span class="data">회의실 / 스터디룸</span>
+                        </li>
+                        <li>
+                            <span class="tit">공간면적</span>
+                            <span class="data">30㎡</span>
+                        </li>
+                        <li>
+                            <span class="tit">예약시간</span>
+                            <span class="data">최소 2시간 부터</span>
+                        </li>
+                        <li>
+                            <span class="tit">수용인원</span>
+                            <span class="data">최소 3명 ~ 최대 12명</span>
+                        </li>
+                    </ul>
+                    <div class="facility_wrap">
+                        <ul class="facility_list">
+                            <li>
+                                <i class="sp_icon ico_table"></i>
+                                <span class="txt_name">의자/<em class="br">테이블</em></span>
+                            </li>
+                            <li>
+                                <i class="sp_icon ico_electricity"></i>
+                                <span class="txt_name">4인용 멀티텝 테이블 2개</span>
+                            </li>
+                            <li>
+                                <i class="sp_icon ico_equipment_rental"></i>
+                                <span class="txt_name">냉장고 / 공기청정기 / 냉난방 시설</span>
+                            </li>
+                            <li>
+                                <i class="sp_icon ico_food"></i>
+                                <span class="txt_name">음식물<em class="br">반입금지(음료 가능)</em></span>
+                            </li>
+                            <li>
+                                <i class="sp_icon ico_toilet"></i>
+                                <span class="txt_name">내부<em class="br">화장실</em></span>
+                            </li>
+                            <li>
+                                <i class="sp_icon ico_tvnprojector"></i>
+                                <span class="txt_name">TV/<em class="br">프로젝터</em></span>
+                            </li>
+                            <li>
+                                <i class="sp_icon ico_wboard"></i>
+                                <span class="txt_name">화이트<em class="br">보드</em></span>
+                            </li>
+                            <li>
+                                <i class="sp_icon ico_wifi"></i>
+                                <span class="txt_name">인터넷/<em class="br">WIFI</em></span>
+                            </li>
+                        </ul>
+                    </div>
+<!--
+                  세선 확인 후 막아버리고 글자 하나남겨서 로그인 후 이용해달라
+-->
+                    <h2 class="meetspace-heading">예약선택</h2>
+                    <div class="meetspace-radio">
+                        <div class="meetspace-radio-item">
+                            <input id="time_reservation" type="radio" class="radio" value="TIME">
+                            <label for="time_reservation">시간 단위 예약하기(최소 2시간 부터)</label>
+                        </div>
+
+                        <div class="meetspace-option">
+                            <div class="heading hidden">
+                                <h3>날짜 선택</h3>
+                            </div>
+                            <div class="calendar hidden">
+                                <table class="scriptCalendar">
+                                    <thead>
+                                    <tr>
+                                        <td class="calendarBtn" id="btnPrevCalendar">&#60;&#60;</td>
+                                        <td colspan="5">
+                                            <span id="calYear">YYYY</span>년
+                                            <span id="calMonth">MM</span>월
+                                        </td>
+                                        <td class="calendarBtn" id="nextNextCalendar">&#62;&#62;</td>
+                                    </tr>
+                                    <tr>
+                                        <td>일</td>
+                                        <td>월</td>
+                                        <td>화</td>
+                                        <td>수</td>
+                                        <td>목</td>
+                                        <td>금</td>
+                                        <td>토</td>
+                                    </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                            <h3 id="hour-selection-header" class="hidden">시간 선택</h3>
+                            <div id="hour-buttons" class="hidden">
+                                <!-- JavaScript로 버튼을 동적으로 생성합니다. -->
+                            </div>
+                        </div>
+
+                        <article class="box_form meetspace-count">
+                            <div class="heading">
+                                <h3>총 예약인원</h3>
+                                <span>(최소 3명 / 최대 12명)</span>
+                            </div>
+                            <div class="box_setting">
+                                <a class="btn_minus">
+                                    <i class="sp_icon ico_minus">-</i>
+                                </a>
+                                <span class="input">
+                                    <input type="number" class="number_set" value="3" min="3" max="12">
+                                </span>
+                                <a class="btn_plus">
+                                    <i class="sp_icon ico_plus">+</i>
+                                </a>
+                            </div>
+                            <div class="pay">
+                                <h3>공간 사용료</h3>
+                                <h2 class="price"></h2>
+                            </div>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                예약하기
+                            </button>
+                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">예약 정보</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p id="modal-content"></p> <!-- 여기에 예약 정보가 표시됩니다. -->
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                                            <button type="button" class="btn btn-primary" onclick="" data-bs-dismiss="modal">예약</button>
+                                            <button type="button" class="btn btn-secondary check" data-bs-dismiss="modal">확인</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </div>
+            <!---->
+        </div>
+    </div>
+    </div>
+
+    <!-- 슬라이더 시작-->
+    <script>
+        const sliderWrap = document.querySelector(".slider__wrap");
+        const sliderInner = sliderWrap.querySelector(".slider__inner");
+        const sliders = sliderWrap.querySelectorAll(".slider");
+        const sliderDot = sliderWrap.querySelector(".slider__dot");
+        const sliderBtn = sliderWrap.querySelectorAll(".slider__btn a");
+
+        let currentIndex = 0;
+        const sliderCount = sliders.length;
+        const sliderWidth = 780; // 슬라이드 이미지의 너비 설정 (사용자가 필요한 값으로 변경하세요)
+
+        function init() {
+            // 이미지 갯수만큼 닷 메뉴 생성
+            let dotIndex = "";
+            sliders.forEach(() => dotIndex += "<a href='#' class='dot'>이미지</a>");
+            sliderDot.innerHTML = dotIndex;
+
+            // 첫번째 닷 메뉴에 활성화 표시
+            sliderDot.firstChild.classList.add("active");
+        }
+        init();
+
+        function gotoSlider(num) {
+            // 슬라이드 이미지의 너비를 기반으로 이동 거리 계산
+            const translateXValue = -sliderWidth * num;
+            sliderInner.style.transition = "all 400ms";
+            sliderInner.style.transform = "translateX(" + translateXValue + "px)";
+            currentIndex = num;
+
+            // 닷 메뉴 활성화 처리
+            let dotActive = document.querySelectorAll(".slider__dot .dot");
+            dotActive.forEach((active) => active.classList.remove("active"));
+            dotActive[num].classList.add("active");
+        }
+
+        // 버튼 클릭 시 이벤트 핸들러
+        sliderBtn.forEach((btn, index) => {
+            btn.addEventListener("click", () => {
+                // 이전(pre) 버튼 클릭 시
+                if (btn.classList.contains("prev")) {
+                    let prevIndex = (currentIndex + sliderCount - 1) % sliderCount;
+                    gotoSlider(prevIndex);
+                }
+                // 다음(next) 버튼 클릭 시
+                else {
+                    let nextIndex = (currentIndex + 1) % sliderCount;
+                    gotoSlider(nextIndex);
+                }
+            });
+        });
+    </script><!-- 슬라이더 끝-->
+    <!-- 맨위 시간당 가격 고르는 부분-->
+    <script>
+        //결제 안내 1000원 기본 선택
+        document.addEventListener("DOMContentLoaded", function() {
+            const defaultPriceRadioButton = document.getElementById("price1");
+            defaultPriceRadioButton.checked = true;
+        });
+        //예약선택 라디오버튼 선택시 날짜 선택보이게 하기
+        document.addEventListener("DOMContentLoaded", function() {
+            const reservationRadio = document.querySelector('input[value="TIME"]');
+            const dateHeading = document.querySelector('.heading');
+            const calendar = document.querySelector('.calendar');
+
+            reservationRadio.addEventListener('change', function() {
+                dateHeading.classList.remove('hidden');
+                calendar.classList.remove('hidden');
+            });
+        });
+    </script><!-- 맨위 시간당 가격 고르는 부분-->
+    <!-- 날짜 캘린더 + 시간 선택  -->
+    <script type="text/javascript">
+        let firstSelectedButton = null;  //시간선택 첫번째
+        let secondSelectedButton = null; //시간선택 두번째
+        let selectedDates = {}; //선택 날짜들
+
+        // session check
+        function checkLogin(check)
+        {
+            const memberid = `[[${session.userid}]]`;
+
+            if(check === 0) {
+                if(memberid == "") {
+                    console.log("check 0", check);
+                    console.log("member", memberid);
+                    console.log("false");
+                    alert("로그인 후 이용해주시기 바랍니다.");
+                }
+            } else if(check === 1) {
+                if(memberid == "") {
+                    console.log("check 1", check);
+                    console.log("member", memberid);
+                    console.log("false");
+                    return false;
+                    // alert("로그인 후 이용해주시기 바랍니다.");
+                } else {
+                    console.log("true");
+                }
+            }
+            // if(check == 0 && memberid == null)
+            // {
+            //     alert("로그인 후 이용해주시기 바랍니다.");
+            //     return false;
+            // };
+            // if(check == 1 && memberid == null) {
+            //     alert("로그인 후 이용해주시기 바랍니다.");
+            //     return false;
+            // }
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            // 자동으로 로드 되면 db를 검색해서 그 시간안에 포함된 시간이 있으면 blur처리 하면됨.
+            buildCalendar();
+
+            document.getElementById("btnPrevCalendar").addEventListener("click", function(event) {
+                prevCalendar();
+            });
+
+            document.getElementById("nextNextCalendar").addEventListener("click", function(event) {
+                nextCalendar();
+            });
+            /**
+            document.querySelector(".choiceDay").addEventListener("click", function(event) {
+                const selectDay = document.getElementsByName("choiceDay")[0].value;
+                console.log(selectDay);
+
+            });
+
+            $.ajax({
+                url : '/selectHour',
+                data : {
+
+                },
+                type: 'GET',
+                success: function(data) {
+                    // const button = hourButtonsContainer.querySelector(`button[data-hour="${hour}"]`);
+                    for(var i=data.starthour; i < data.endhour; i++) {
+                        document.querySelectorAll('.hour-button.selected[data-hour="'+i+'"]').forEach(button => {
+                            button.classList.remove('selected');
+                            button.classList.add('blur');
+                        });
+                    }
+                }, error: function(error) {
+                    console.log(error);
+                }
+            })
+            **/
+            //예약버튼 누르고 -> 예약버튼
+            document.querySelector('.modal-footer .btn-primary').addEventListener('click', function() {
+                // 시간 선택 요소의 선택 클래스를 blur 클래스로 변경
+                if (!checkLogin(0)) return false; // session 체크
+                document.querySelectorAll('.hour-button.selected').forEach(button => {
+                    button.classList.remove('selected');
+                    button.classList.add('blur');
+                });
+                // 이부분에서 ajax get으로 해서 가져오는 방법도 있다~
+                // d여기서 ajax 하면 가능할듯?
+
+
+
+                // 예약 인원 초기화
+                clearReservation()
+                //공간 사용료 초기화
+                clearSpaceFee()
+                // 선택된 날짜 및 시간 초기화
+                selectedDates = {};
+                clearHourSelection();
+            });
+            // 예약버튼 누르고  -> 취소버튼
+            document.querySelector('.modal-footer .btn-secondary').addEventListener('click', function() {
+                // if (!checkLogin(0)) return true; // session 체크
+                // 모든 selected 클래스를 제거
+                document.querySelectorAll('.hour-button.selected').forEach(button => {
+                    button.classList.remove('selected');
+                });
+                // 예약 인원 초기화
+                clearReservation()
+                //공간 사용료 초기화
+                clearSpaceFee()
+                // 선택된 날짜 및 시간 초기화
+                selectedDates = {};
+                clearHourSelection();
+            });
+
+            // 예약하기버튼
+            document.querySelector('.btn-primary[data-bs-target="#exampleModal"]').addEventListener('click', function handleReservationClick() {
+
+                const selectedDay = document.querySelector('.choiceDay')?.innerText; // 선택한 날짜
+                console.log(selectedDay);
+                const selectedHours = selectedDates[selectedDay] || [];
+                const numberSet = document.querySelector('.number_set').value;
+                const priceElement = document.querySelector('.price').innerText;
+
+                // 라디오 버튼 선택 여부 확인
+                const timeReservationRadio = document.getElementById('time_reservation');
+                if (!timeReservationRadio.checked) {
+                    let modalContent = `
+                        <p>예약선택의 라디오버튼을 선택해주세요.</p>
+                    `;
+                    document.getElementById('modal-content').innerHTML = modalContent;
+
+                    // 확인 버튼만 보이게 함 예약.취소버튼 숨기기
+                    document.querySelector('.modal-footer .btn-secondary').style.display = 'none';
+                    document.querySelector('.modal-footer .btn-primary').style.display = 'none';
+                    document.querySelector('.modal-footer .check').style.display = 'block';
+                } else if (!selectedDay) {
+                    let modalContent = `
+                        <p>캘린더의 날짜를 선택해 주세요.</p>
+                    `;
+                    document.getElementById('modal-content').innerHTML = modalContent;
+
+                    // 확인 버튼만 보이게 함 예약.취소버튼 숨기기
+                    document.querySelector('.modal-footer .btn-secondary').style.display = 'none';
+                    document.querySelector('.modal-footer .btn-primary').style.display = 'none';
+                    document.querySelector('.modal-footer .check').style.display = 'block';
+                } else if (selectedHours.length === 0) {
+                    let modalContent = `
+                        <p>예약할 시간을 선택해주세요.</p>
+                    `;
+                    document.getElementById('modal-content').innerHTML = modalContent;
+
+                    // 확인 버튼만 보이게 함 예약.취소버튼 숨기기
+                    document.querySelector('.modal-footer .btn-secondary').style.display = 'none';
+                    document.querySelector('.modal-footer .btn-primary').style.display = 'none';
+                    document.querySelector('.modal-footer .check').style.display = 'block';
+                } else {
+                    const selectedDateFormatted = toDay.getFullYear() + '-' + autoLeftPad((toDay.getMonth() + 1), 2) + '-' + autoLeftPad(selectedDay, 2);
+                    // 선택된 시간 중 첫 번째와 마지막 시간 추출
+                    const firstSelectedHour = autoLeftPad(selectedHours[0], 2);
+                    const lastSelectedHour = autoLeftPad(selectedHours[selectedHours.length - 1] + 1, 2);
+
+                    let modalContent = `
+                        <p>날짜: ${selectedDateFormatted}</p>
+                        <p>시간:  ${firstSelectedHour}시 ~ ${lastSelectedHour}시</p>
+                        <p>인원: ${numberSet}명</p>
+                        <p>공간 사용료: ${priceElement}</p>
+                    `;
+
+                    document.getElementById('modal-content').innerHTML = modalContent;
+
+                    // 취소 및 예약 버튼 보이게 함
+                    document.querySelector('.modal-footer .btn-secondary').style.display = 'block';
+                    document.querySelector('.modal-footer .btn-primary').style.display = 'block';
+                    document.querySelector('.modal-footer .check').style.display = 'none';
+
+                    // 예약 버튼 클릭 이벤트
+                    const reservationClickHandler = function () {
+
+                        // 예약 정보 modal content 부분에 띄어주는 곳 여기서 ajax로 처리하면 될듯?
+                        var selectedDate = selectedDateFormatted + ' 00:00:00';
+                        var startdateS = selectedDateFormatted + ' ' + firstSelectedHour + ':00:00';
+                        if (lastSelectedHour == 24) {
+                            let plus = parseInt(selectedDay) + 1;
+                            var enddateS = toDay.getFullYear() + '-' + autoLeftPad((toDay.getMonth() + 1), 2) + '-' + autoLeftPad(plus, 2) + ' ' + '00:00:00';
+                        } else {
+                            var enddateS = selectedDateFormatted + ' ' + lastSelectedHour + ':00:00';
+                        }
+
+                        var randomNum = toDay.getFullYear() + autoLeftPad((toDay.getMonth() + 1), 2) + autoLeftPad(selectedDay, 2) + Math.floor(Math.random() * 10000)
+
+                        const urlParams = new URL(location.href).searchParams;
+                        const params = urlParams.get("SGINum");
+                        console.log(params);
+                        console.log(randomNum);
+                        console.log(startdateS, enddateS);
+
+                        // if (!checkLogin(0)) return true;
+                        $.ajax({
+                            url: '/TeamOrder',
+                            data: {
+                                SGIdx: parseInt(params),
+                                MemberId: `[[${session.userid}]]`,
+                                SGONum: randomNum,
+                                SGORegDate: selectedDate,
+                                SGOStartDate: startdateS,
+                                SGOEndDate: enddateS,
+                                SGOTotal: parseInt(priceElement)
+                            },
+                            type: 'POST',
+                            dataType: 'JSON',
+                            success: function (data) {
+                                if (data == true) {
+                                    console.log('------------');
+                                    console.log('예약 정보:');
+                                    console.log('날짜:', selectedDateFormatted);
+                                    console.log('시간:', firstSelectedHour + '시 ~ ' + lastSelectedHour + '시');
+                                    console.log('인원:', numberSet + '명');
+                                    console.log('공간 사용료:', priceElement);
+
+                                    alert("예약이 완료되었습니다.");
+
+                                    // 예약 정보 초기화
+                                    clearReservation();
+                                    clearSpaceFee();
+                                    clearHourSelection();
+
+                                    // 이벤트 리스너 제거
+                                    document.querySelector('.modal-footer .btn-primary').removeEventListener('click', reservationClickHandler);
+                                    window.location.reload();
+                                } else {
+                                    alert("예약에 실패 하였습니다.");
+                                }
+                            }, error: function (error) {
+                                console.log(error);
+                            }
+                        })
+                         // session 체크
+
+
+                        /**
+                         // 예약 정보 콘솔에 출력
+                         console.log('------------');
+                         console.log('예약 정보:');
+                         console.log('날짜:', selectedDateFormatted);
+                         console.log('시간:', firstSelectedHour + '시 ~ ' + lastSelectedHour + '시');
+                         console.log('인원:', numberSet + '명');
+                         console.log('공간 사용료:', priceElement);
+
+                         // 예약 정보 초기화
+                         clearReservation();
+                         clearSpaceFee();
+                         clearHourSelection();
+
+                         // 이벤트 리스너 제거
+                         document.querySelector('.modal-footer .btn-primary').removeEventListener('click', reservationClickHandler);
+                         **/
+                    };
+                    if (!checkLogin(1)) {
+                        console.log("true");
+                        // 예약 버튼 클릭 이벤트 등록
+                        document.querySelector('.modal-footer .btn-primary').addEventListener('click', reservationClickHandler);
+
+                        // 취소 버튼 클릭 이벤트 등록
+                        document.querySelector('.modal-footer .btn-secondary').addEventListener('click', function handleCancelClick() {
+                            // 예약 정보 초기화
+                            clearReservation();
+                            clearSpaceFee();
+                            clearHourSelection();
+
+                            // 이벤트 리스너 제거
+                            document.querySelector('.modal-footer .btn-secondary').removeEventListener('click', handleCancelClick);
+                            document.querySelector('.modal-footer .btn-primary').removeEventListener('click', reservationClickHandler);
+                        });
+                    }
+                }
+            });
+        });
+
+        var toDay = new Date(); // @param 전역 변수, 오늘 날짜 / 내 컴퓨터 로컬을 기준으로 toDay에 Date 객체를 넣어줌
+        var nowDate = new Date();  // @param 전역 변수, 실제 오늘날짜 고정값
+
+        //이전달 넘기기 버튼
+        function prevCalendar() {
+            this.toDay = new Date(toDay.getFullYear(), toDay.getMonth() - 1, toDay.getDate());
+            buildCalendar();    // @param 전월 캘린더 출력 요청
+        }
+        //다음달 넘기기 버튼
+        function nextCalendar() {
+            this.toDay = new Date(toDay.getFullYear(), toDay.getMonth() + 1, toDay.getDate());
+            buildCalendar();    // @param 명월 캘린더 출력 요청
+        }
+
+        // 날짜마다 시간객체를 가지고있음
+        // 해당하는 날짜를 클릭하면 이벤리스너 실행 클래스 blur 처리 , 배열 처리 되어있음
+
+        //캘린더 js로 생성. 날짜 값을 받아 캘린더 폼을 생성하고, 날짜값을 채워넣는다.
+        function buildCalendar() {
+            let doMonth = new Date(toDay.getFullYear(), toDay.getMonth(), 1); //첫번째 날짜(day)
+            let lastDate = new Date(toDay.getFullYear(), toDay.getMonth() + 1, 0); //마지막 날짜(day), 0은 전달의 마지막날짜
+            let tbCalendar = document.querySelector(".scriptCalendar > tbody");
+            // 날짜 출력해주는 부분
+
+            document.getElementById("calYear").innerText = toDay.getFullYear(); // @param YYYY월
+            document.getElementById("calMonth").innerText = autoLeftPad((toDay.getMonth() + 1), 2); // @param MM월 2는 2개로표시autoLeft로 자리하나남으면0으로채움
+
+            // @details 이전 캘린더의 출력결과가 남아있다면, 이전 캘린더를 삭제한다.
+            while (tbCalendar.rows.length > 0) {
+                tbCalendar.deleteRow(tbCalendar.rows.length - 1);
+            }
+
+            // @param 첫번째 개행
+            let row = tbCalendar.insertRow();
+
+            // @param 날짜가 표기될 열의 증가값
+            let dom = 1;
+            let uniqueId = 1;
+            // @details 시작일의 요일값( doMonth.getDay() ) + 해당월의 전체일( lastDate.getDate())을 더해준 값에서
+            // 7로 나눈값을 올림( Math.ceil() )하고 다시 시작일의 요일값( doMonth.getDay() )을 빼준다.
+            let daysLength = (Math.ceil((doMonth.getDay() + lastDate.getDate()) / 7) * 7) - doMonth.getDay();
+
+            // @param 달력 출력
+            // @details 시작값은 1일을 직접 지정하고 요일값( doMonth.getDay() )를 빼서 마이너스( - )로 for문을 시작한다.
+            for (let day = 1 - doMonth.getDay(); daysLength >= day; day++) {
+                let column = row.insertCell();
+                column.id = `day-${toDay.getFullYear()}-${autoLeftPad(toDay.getMonth() + 1, 2)}-${autoLeftPad(day, 2)}`; // Assign a unique ID to each cell with date string
+                uniqueId++; // Increment the unique ID counter
+
+                // @param 평일( 전월일과 익월일의 데이터 제외 )
+                if (Math.sign(day) == 1 && lastDate.getDate() >= day) {
+                    // @param 평일 날짜 데이터 삽입
+                    column.innerText = autoLeftPad(day, 2);
+
+                    // @param 일요일인 경우
+                    if (dom % 7 == 1) {
+                        column.style.color = "#FF4D4D";
+                    }
+
+                    // @param 토요일인 경우
+                    if (dom % 7 == 0) {
+                        column.style.color = "#4D4DFF";
+                        row = tbCalendar.insertRow(); // @param 토요일이 지나면 다시 가로 행을 한줄 추가한다.
+                    }
+
+                    // Save selected hours for the date if not already done
+                    if (!selectedDates[autoLeftPad(day, 2)]) {
+                        selectedDates[autoLeftPad(day, 2)] = [];
+                    }
+
+                    // @param 평일 전월일과 익월일의 데이터 날짜변경
+                } else {
+                    let exceptDay = new Date(doMonth.getFullYear(), doMonth.getMonth(), day);
+                    column.innerText = autoLeftPad(exceptDay.getDate(), 2);
+                    column.style.color = "#A9A9A9";
+                }
+
+                // @brief 전월, 명월 음영처리
+                // @details 현재년과 선택 년도가 같은경우
+                if (toDay.getFullYear() == nowDate.getFullYear()) {
+                    // @details 현재월과 선택월이 같은경우
+                    if (toDay.getMonth() == nowDate.getMonth()) {
+                        // @details 현재일보다 이전인 경우이면서 현재월에 포함되는 일인경우
+                        if (nowDate.getDate() > day && Math.sign(day) == 1) {
+                            column.style.backgroundColor = "#E5E5E5";
+                        }
+
+                        // @details 현재일보다 이후이면서 현재월에 포함되는 일인경우
+                        else if (nowDate.getDate() < day && lastDate.getDate() >= day) {
+                            column.style.backgroundColor = "#FFFFFF";
+                            column.style.cursor = "pointer";
+                            column.onclick = function () { calendarChoiceDay(this); }
+                        }
+
+                        // @details 현재일인 경우
+                        else if (nowDate.getDate() == day) {
+                            column.style.backgroundColor = "#FFFFE6";
+                            column.style.cursor = "pointer";
+                            column.onclick = function () { calendarChoiceDay(this); }
+                        }
+
+                        // @details 현재월보다 이전인경우
+                    } else if (toDay.getMonth() < nowDate.getMonth()) {
+                        if (Math.sign(day) == 1 && day <= lastDate.getDate()) {
+                            column.style.backgroundColor = "#E5E5E5";
+                        }
+                    }
+
+                    // @details 현재월보다 이후인경우
+                    else {
+                        if (Math.sign(day) == 1 && day <= lastDate.getDate()) {
+                            column.style.backgroundColor = "#FFFFFF";
+                            column.style.cursor = "pointer";
+                            column.onclick = function () { calendarChoiceDay(this); }
+                        }
+                    }
+                }
+
+                // @details 선택한년도가 현재년도보다 작은경우
+                else if (toDay.getFullYear() < nowDate.getFullYear()) {
+                    if (Math.sign(day) == 1 && day <= lastDate.getDate()) {
+                        column.style.backgroundColor = "#E5E5E5";
+                    }
+                }
+
+                // @details 선택한년도가 현재년도보다 큰경우
+                else {
+                    if (Math.sign(day) == 1 && day <= lastDate.getDate()) {
+                        column.style.backgroundColor = "#FFFFFF";
+                        column.style.cursor = "pointer";
+                        column.onclick = function () { calendarChoiceDay(this); }
+                    }
+                }
+                dom++;
+            }
+        }
+
+        // 날짜 선택 함수
+        function calendarChoiceDay(column) {
+            // 기존 선택일이 존재하는 경우 기존 선택일의 표시형식을 초기화 한다.
+            if (document.getElementsByClassName("choiceDay")[0]) {
+                // 금일인 경우
+                if (document.getElementById("calMonth").innerText == autoLeftPad((nowDate.getMonth() + 1), 2) && document.getElementsByClassName("choiceDay")[0].innerText == autoLeftPad(toDay.getDate(), 2)) {
+                    document.getElementsByClassName("choiceDay")[0].style.backgroundColor = "#FFFFE6";
+                } else { // 금일이 아닌 경우
+                    document.getElementsByClassName("choiceDay")[0].style.backgroundColor = "#FFFFFF";
+                }
+                document.getElementsByClassName("choiceDay")[0].classList.remove("choiceDay");
+            }
+            // 선택일 체크 표시
+            column.style.backgroundColor = "#FF9999";
+
+            // 선택일 클래스명 변경
+            column.classList.add("choiceDay");
+
+            // 현재 선택된 날짜 저장
+            const selectedDay = column.innerText;
+
+            // 시간 선택 요소 보이게 하기
+            document.getElementById("hour-selection-header").classList.remove('hidden');
+            document.getElementById("hour-buttons").classList.remove('hidden');
+
+            const urlParams = new URL(location.href).searchParams;
+            $.ajax({
+                url : '/selectHour',
+                type: 'GET',
+                data : {
+                    selectedDay : parseInt(selectedDay),
+                    SGINum : `${urlParams.get("SGINum")}`
+                },
+                dataType: 'JSON',
+                success: function(data) {
+                    console.log(data);
+                    const result = JSON.stringify(data);
+                    console.log(data.starthour);
+                    console.log(result.starthour);
+                    // const button = hourButtonsContainer.querySelector(`button[data-hour="${hour}"]`);
+                    for(var j = 0; j < data.length; j++) {
+                        console.log(j);
+                        for(var i = data[j].starthour; i <= data[j].endhour - 1; i++) {
+                            console.log(i);
+                            // document.querySelector('.hour-button[data-hour="'+data[j][i]+'"]').classList.add('blur');
+                            document.querySelectorAll('.hour-button[data-hour="'+i+'"]').forEach(button => {
+                                button.classList.add('blur');
+                            });
+                        }
+                    }
+                }, error: function(error) {
+                    console.log(error);
+                }
+            })
+
+            // 시간 버튼 생성 및 업데이트
+            createHourButtons(selectedDay);
+            // 선택된 시간 초기화
+            clearHourSelection();
+            // 기존 예약 인원 초기화
+            clearReservation();
+            // 기존 공간 사용료 초기화
+            clearSpaceFee();
+        }
+
+        function clearHourSelection() {
+            const hourButtonsContainer = document.getElementById('hour-buttons');
+            hourButtonsContainer.querySelectorAll('.hour-button.selected').forEach(button => {
+                button.classList.remove('selected');
+            });
+            firstSelectedButton = null;
+            secondSelectedButton = null;
+        }
+
+        function clearReservation() {
+            const numberSet = document.querySelector('.number_set');
+            numberSet.value = 3; // 최소값으로 초기화
+        }
+
+        function clearSpaceFee() {
+            const priceElement = document.querySelector('.price');
+            priceElement.innerText = ''; // 공간 사용료 초기화
+        }
+
+
+        function autoLeftPad(number, targetLength) {
+            return String(number).padStart(targetLength, '0');
+        }
+
+        function createHourButtons(selectedDay) {
+            const hourButtonsContainer = document.getElementById('hour-buttons');
+            // let firstSelectedButton = null;
+            // let secondSelectedButton = null;
+
+            // Clear existing buttons
+            hourButtonsContainer.innerHTML = '';
+
+            // Generate buttons for 24 hours
+            for (let hour = 9; hour < 24; hour++) {
+                const button = document.createElement('button');
+                button.classList.add('hour-button');
+                button.classList.add(`d-${selectedDay}`); // Add class for selected
+                // day 눌렀을 때 classlist에 blur를 하나 더 추가 시키는 방법도 있음 여기서 ajax 불러와서 하면 가능할듯
+
+                const formattedHour = autoLeftPad(hour, 2); // 2자리 숫자로 만들기
+                button.textContent = `${formattedHour}시 ~ ${autoLeftPad(hour + 1, 2)}시`;
+                button.dataset.hour = hour; // hour를 데이터 속성으로 저장
+                hourButtonsContainer.appendChild(button);
+
+                // Restore previously selected hours for the currently selected day
+                if (document.getElementsByClassName("choiceDay")[0]?.innerText === selectedDay && selectedDates[selectedDay]?.includes(hour)) {
+                    button.classList.add('selected');
+                }
+
+                button.addEventListener('click', () => {
+                    const hour = parseInt(button.dataset.hour);
+
+                    // Check if the button has the 'blur' class
+                    if (button.classList.contains('blur')) {
+                        alert('선택할 수 없는 시간입니다.');
+                        clearSelection();
+                        return;
+                    }
+
+                    if (!firstSelectedButton) {
+                        clearSelection();
+                        firstSelectedButton = button;
+                        button.classList.add('selected');
+                    } else if (firstSelectedButton === button) {
+                        button.classList.remove('selected');
+                        firstSelectedButton = null;
+                    } else if (!secondSelectedButton) {
+                        if (hour < parseInt(firstSelectedButton.dataset.hour)) {
+                            firstSelectedButton.classList.remove('selected');
+                            clearSelection();
+                            firstSelectedButton = button;
+                            button.classList.add('selected');
+                        } else {
+                            secondSelectedButton = button;
+                            highlightRange(firstSelectedButton, secondSelectedButton);
+                        }
+                    } else if (secondSelectedButton === button) {
+                        clearSelection();
+                    } else {
+                        clearSelection();
+                        firstSelectedButton = button;
+                        button.classList.add('selected');
+                    }
+
+                    updateSelectedHours(selectedDay);
+                    updatePrice();
+                });
+            }
+
+            // ajax로 선택한 시간을 for문 돌려서 blur 처리해주면 됨
+            function highlightRange(startButton, endButton) {
+                clearSelection();
+                const startHour = parseInt(startButton.dataset.hour);
+                const endHour = parseInt(endButton.dataset.hour);
+
+                for (let hour = startHour; hour <= endHour; hour++) {
+                    const button = hourButtonsContainer.querySelector(`button[data-hour="${hour}"]`);
+                    // 여기가 맞는데
+                    if (button.classList.contains('blur')) {
+                        alert('선택할 수 없는 시간 범위입니다.');
+                        clearSelection();
+                        return;
+                    }
+                    button.classList.add('selected');
+                }
+            }
+
+            function clearSelection() {
+                hourButtonsContainer.querySelectorAll('.selected').forEach(button => {
+                    button.classList.remove('selected');
+                });
+                firstSelectedButton = null;
+                secondSelectedButton = null;
+            }
+
+            // Check if "choiceDay" class exists before removing "selected" class
+            function updateSelectedHours(selectedDay) {
+                if (!document.getElementsByClassName("choiceDay")[0]) {
+                    clearSelection();
+                }
+                selectedDates[selectedDay] = [];
+                hourButtonsContainer.querySelectorAll('.selected').forEach(button => {
+                    selectedDates[selectedDay].push(parseInt(button.dataset.hour));
+                });
+            }
+        }
+
+
+        //인원 추가, 감소 버튼
+        function plusminusbutton() {
+            const numberInput = document.querySelector('.number_set');
+            const minusButton = document.querySelector('.btn_minus');
+            const plusButton = document.querySelector('.btn_plus');
+
+            minusButton.addEventListener('click', function () {
+                updateInputValue(-1);
+            });
+
+            plusButton.addEventListener('click', function () {
+                updateInputValue(1);
+            });
+
+            function updateInputValue(change) {
+                const newValue = parseInt(numberInput.value) + change;
+                if (newValue >= 3 && newValue <= 12) {
+                    numberInput.value = newValue;
+                    updatePrice();
+                }
+            }
+        }
+        //총 가격 (선택인원 수 * 시간 갯수 * 시간당가격 )
+        function updatePrice() {
+            const selectedHour = document.querySelectorAll('.hour-button.selected').length; // 선택된 시간 수
+            const selectedPeople = parseInt(document.querySelector('.number_set').value); // 선택된 인원 수
+
+            const totalPrice = selectedPeople * selectedHour * pricePerHour;
+            document.querySelector('.price').textContent = `${totalPrice}원`;
+        }
+        //시간당 가격 변경하는 것 시간당 1000원 2000원 선택
+        function initializeEventListeners() {
+            document.querySelector('.number_set').addEventListener('change', updatePrice);
+            document.querySelectorAll('input[name="price"]').forEach(button => {
+                button.addEventListener('change', function () {
+                    pricePerHour = parseInt(this.value);
+                    updatePrice();
+                });
+            });
+        }
+
+        let pricePerHour = 1000; // 시간당 사용료 (예시로 1000원)
+
+        plusminusbutton();
+        updatePrice();
+        initializeEventListeners();
+
+
+    </script>
+
+</th:block>
+</html>

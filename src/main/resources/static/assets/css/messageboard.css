@@ -1,0 +1,253 @@
+section {
+    padding: 60px 0;
+    overflow: hidden;
+}
+
+.content-wrapper{
+    display: flex;
+}
+.category-sticky{
+   height: 420px;
+    position: relative;
+    top: 45px;
+}
+section.messageBoard .container .category-menu {
+    display: flex;
+    flex-direction: column; /* 카테고리 메뉴 내부의 요소들을  세로로 배치 */
+    width: 190px;
+    position: sticky;
+    top: 0;
+
+}
+
+section.messageBoard .container .category-menu .category {
+    display: flex;
+    flex-direction: column; /* 카테고리들을 아래 방향으로 배치 */
+}
+
+.contents-group{
+    margin-left: 40px;
+}
+
+.post-right-button{
+    text-align: right;
+}
+
+/*--------------------------------------------------------------
+# messageBoard
+--------------------------------------------------------------*/
+
+.messageBoard-title{
+
+}
+/*내가만든 section*/
+section.messageBoard {
+    position: relative;
+    padding: 150px 0 60px;
+}
+section.messageBoard .container {
+    position: relative;
+    /*height: 684px;*/
+}
+section.messageBoard .container .category {
+    max-width: 1320px;
+    display: flex;
+    /*justify-content: space-between;*/
+}
+section.messageBoard .container .category .categoryName {
+    display: flex;
+    width: 186px;
+    height: 50px;
+    justify-content: center;
+    align-items: center;
+}
+section.messageBoard .container .category .categoryName:hover {
+    background-color: lightgray;
+}
+section.messageBoard .container .category .categoryName.active {
+    background-color: lightgray;
+}
+
+section.messageBoard .container .contents-group {
+    /*display: block;*/
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+section.messageBoard .container .contents-group .content {
+    height: 150px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+section.messageBoard .container .contents-group .content h5 {
+    margin-bottom: 20px;
+}
+section.messageBoard .container .contents-group .content:hover {
+    background-color: lightgray;
+}
+section.messageBoard .container .btn-section{
+    text-align: center;
+}
+
+/*--------------------------------------------------------------
+# information
+--------------------------------------------------------------*/
+/*내가만든 section*/
+section.information .main .container-main h4 {
+    position: relative;
+    padding: 150px 0 60px;
+}
+
+
+/*--------------------------------------------------------------
+# post
+--------------------------------------------------------------*/
+/*내가만든 section*/
+section.post {
+    position: relative;
+    padding: 150px 0 60px;
+}
+section.post main .container h4.page-subject {
+    margin-bottom: 50px;
+}
+section.post main .container h4.post-title {
+    margin-bottom: 20px;
+}
+section.post main .container p.post-createDate {
+    display: flex;
+    justify-content: end;
+}
+section.post main .container .post-peopleGroup {
+    display: flex;
+}
+section.post main .container .post-peopleGroup .people {
+    margin-right: 15px;
+}
+section.post main .container .information {
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+section.post main .container .content {
+    margin-bottom: 50px;
+}
+
+
+/*내가만든 section*/
+/*--------------------------------------------------------------
+# postUpdate
+--------------------------------------------------------------*/
+section.postUpdate {
+    position: relative;
+    padding: 150px 0 60px;
+}
+section.postUpdate main .container h4.page-subject {
+    margin-bottom: 50px;
+}
+/*--------------------------------------------------------------
+# Why Us
+--------------------------------------------------------------*/
+/*내가만든거*/
+.why-us .container .disappear {
+    display: none;
+    visibility: hidden;
+}
+
+/*내가만든거*/
+.why-us .container .buttonGroup {
+    /*position: absolute;*/
+    display: flex;
+    justify-content: center;
+    margin-bottom: 100px;
+}
+
+/*내가만든거*/
+.why-us .container button {
+    margin: 0 10px;
+}
+
+.why-us .content {
+    padding: 30px;
+    background: #1977cc;
+    border-radius: 4px;
+    color: #fff;
+}
+
+.why-us .content h3 {
+    font-weight: 700;
+    font-size: 34px;
+    margin-bottom: 30px;
+}
+
+.why-us .content p {
+    margin-bottom: 30px;
+}
+
+.why-us .content .more-btn {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 6px 30px 8px 30px;
+    color: #fff;
+    border-radius: 50px;
+    transition: all ease-in-out 0.4s;
+}
+
+.why-us .content .more-btn i {
+    font-size: 14px;
+}
+
+.why-us .content .more-btn:hover {
+    color: #1977cc;
+    background: #fff;
+}
+
+.why-us .icon-boxes .icon-box {
+    text-align: center;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.1);
+    padding: 40px 30px;
+    width: 100%;
+}
+
+/*내가만든거*/
+.why-us .icon-boxes .icon-box:hover {
+    text-align: center;
+    border-radius: 10px;
+    background: lightgray;
+    box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.1);
+    padding: 40px 30px;
+    width: 100%;
+    cursor: pointer;
+}
+
+.why-us .icon-boxes .icon-box i {
+    font-size: 40px;
+    color: #1977cc;
+    margin-bottom: 30px;
+}
+
+/*내가만든거*/
+.why-us .icon-boxes .icon-box img {
+    width: 200px;
+    height: 150px;
+    border-radius: 20%;
+    margin-bottom: 30px;
+}
+
+/*내가만든거*/
+.why-us .icon-boxes .icon-box a:hover {
+    background-color: blue;
+}
+
+.why-us .icon-boxes .icon-box h4 {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0 0 30px 0;
+}
+
+.why-us .icon-boxes .icon-box p {
+    font-size: 15px;
+    color: #848484;
+}
+

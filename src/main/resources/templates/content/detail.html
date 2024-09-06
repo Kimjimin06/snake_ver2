@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{fragments/layout}">
+<head>
+  <title th:text="${title}"></title>
+</head>
+<th:block layout:fragment="content">
+    <div class="section">
+        <div class="menu-title">
+            <h2>메뉴 가격</h2>
+        </div>
+        <div class="choice-title-kind">
+            <h3 class="ticket" th:text="${type1}"></h3>
+        </div>
+        <div class="container-detail2 text-center">
+            <div class="row g-2">
+                <div class="col-6" th:each="List : ${selectList1}">
+                    <div class="p-3">
+                        <div class="container-info">
+                            <span class="time" th:text="${List.getSIPName()}"></span>
+                            <div class="separator"></div>
+                            <span class="price" th:text="${List.getSIPPrice()} + 원"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="choice-title-kind">
+            <h3 class="ticket" th:text="${type2}"></h3>
+        </div>
+        <div class="container-detail2 text-center">
+            <div class="row g-2">
+                <div class="col-6" th:each="List : ${selectList2}">
+                    <div class="p-3">
+                        <div class="container-info">
+                            <span class="time" th:text="${List.getSIPName()}"></span>
+                            <div class="separator"></div>
+                            <span class="price" th:text="${List.getSIPPrice()} + 원"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="choice-title-kind">
+            <h3 class="ticket">스터디룸 이용 가격</h3>
+        </div>
+        <div class="container-detail2 text-center">
+            <div class="row g-2">
+                <div class="col-6" th:each="List1 : ${selectList3}">
+                    <div class="p-3">
+                        <div class="container-info">
+                            <span class="time" th:text="${List1.getSGIContent()}"></span>
+                            <div class="separator"></div>
+                            <span class="price" th:text="${List1.getSGPName()} + ' - ' + ${List1.getSGPPrice()} + 원"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+</html>
+
